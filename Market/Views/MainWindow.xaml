@@ -1,0 +1,1179 @@
+﻿<Window
+    x:Class="Market.Views.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
+    xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
+    xmlns:dxdo="http://schemas.devexpress.com/winfx/2008/xaml/docking"
+    xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+    xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:Persistence="clr-namespace:Market.Persistence"
+    xmlns:views="clr-namespace:Market.Views"
+    Width="1024"
+    Height="715"
+    mc:Ignorable="d"
+    Icon="/Res/png/aliexpress.png"
+    Title="تسيير متجر"
+    WindowStartupLocation="CenterScreen"
+    WindowState="Maximized">
+
+    <Window.Resources>
+        <!--Control colors.-->
+        <Color x:Key="WindowColor">#FFE8EDF9</Color>
+        <Color x:Key="ContentAreaColorLight">#FFC5CBF9</Color>
+        <Color x:Key="ContentAreaColorDark">#FF7381F9</Color>
+        <Color x:Key="DisabledControlLightColor">#FFE8EDF9</Color>
+        <Color x:Key="DisabledControlDarkColor">#FFC5CBF9</Color>
+        <Color x:Key="DisabledForegroundColor">#FF888888</Color>
+        <Color x:Key="SelectedBackgroundColor">#FFC5CBF9</Color>
+        <Color x:Key="SelectedUnfocusedColor">#FFDDDDDD</Color>
+        <Color x:Key="ControlLightColor">White</Color>
+        <Color x:Key="ControlMediumColor">#FF7381F9</Color>
+        <Color x:Key="ControlDarkColor">#FF211AA9</Color>
+        <Color x:Key="ControlMouseOverColor">#FF3843C4</Color>
+        <Color x:Key="ControlPressedColor">#FF211AA9</Color>
+        <Color x:Key="GlyphColor">#FF444444</Color>
+        <Color x:Key="GlyphMouseOver">sc#1, 0.004391443, 0.002428215, 0.242281124</Color>
+        <!--Border colors-->
+        <Color x:Key="BorderLightColor">#FFCCCCCC</Color>
+        <Color x:Key="BorderMediumColor">#FF888888</Color>
+        <Color x:Key="BorderDarkColor">#FF444444</Color>
+        <Color x:Key="PressedBorderLightColor">#FF888888</Color>
+        <Color x:Key="PressedBorderDarkColor">#FF444444</Color>
+        <Color x:Key="DisabledBorderLightColor">#FFAAAAAA</Color>
+        <Color x:Key="DisabledBorderDarkColor">#FF888888</Color>
+        <Color x:Key="DefaultBorderBrushDarkColor">Black</Color>
+        <!--Control-specific resources.-->
+        <Color x:Key="HeaderTopColor">#FFC5CBF9</Color>
+        <Color x:Key="DatagridCurrentCellBorderColor">Black</Color>
+        <Color x:Key="SliderTrackDarkColor">#FFC5CBF9</Color>
+        <Color x:Key="NavButtonFrameColor">#FF3843C4</Color>
+        <LinearGradientBrush x:Key="MenuPopupBrush" StartPoint="0.5,0" EndPoint="0.5,1">
+            <GradientStop Offset="0" Color="{DynamicResource ControlLightColor}" />
+            <GradientStop Offset="0.5" Color="{DynamicResource ControlMediumColor}" />
+            <GradientStop Offset="1" Color="{DynamicResource ControlLightColor}" />
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="ProgressBarIndicatorAnimatedFill" StartPoint="0,0" EndPoint="1,0">
+            <LinearGradientBrush.GradientStops>
+                <GradientStopCollection>
+                    <GradientStop Offset="0" Color="#000000FF" />
+                    <GradientStop Offset="0.4" Color="#600000FF" />
+                    <GradientStop Offset="0.6" Color="#600000FF" />
+                    <GradientStop Offset="1" Color="#000000FF" />
+                </GradientStopCollection>
+            </LinearGradientBrush.GradientStops>
+        </LinearGradientBrush>
+        <DataTemplate x:Key="readonlyCardTemplate">
+            <Grid Margin="0">
+                <dxe:ImageEdit
+                    Width="64"
+                    Height="70"
+                    IsReadOnly="True"
+                    ShowMenu="False"
+                    Source="{Binding mProducts/Image}"
+                    Stretch="UniformToFill" />
+            </Grid>
+        </DataTemplate>
+        <SolidColorBrush x:Key="DisabledColor" Color="DarkGray" />
+        <SolidColorBrush x:Key="EnabledColor" Color="SlateGray" />
+        <Style x:Key="MyFocusVisual">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Control}">
+                        <Grid Margin="3 2">
+                            <Rectangle
+                                x:Name="r1"
+                                Stroke="Black"
+                                StrokeDashArray="2 2"
+                                StrokeThickness="1" />
+                            <Border
+                                x:Name="border"
+                                Width="{TemplateBinding ActualWidth}"
+                                Height="{TemplateBinding ActualHeight}"
+                                BorderThickness="1"
+                                CornerRadius="2" />
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="ShadowStyle">
+            <Setter Property="Control.Foreground" Value="LightGray" />
+        </Style>
+        <Style x:Key="CalculatorButton" TargetType="{x:Type Button}">
+            <Setter Property="OverridesDefaultStyle" Value="True" />
+            <Setter Property="Margin" Value="4 2 4 2" />
+            <Setter Property="Height" Value="50" />
+            <Setter Property="Width" Value="50" />
+            <Setter Property="FontFamily" Value="Verdana" />
+            <Setter Property="FontSize" Value="18px" />
+            <Setter Property="Focusable" Value="False" />
+            <Setter Property="FontWeight" Value="Normal" />
+            <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisual}" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border
+                            x:Name="border"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="LightGray"
+                            BorderThickness="1"
+                            CornerRadius="15"
+                            Padding="4,2">
+                            <Grid>
+                                <ContentPresenter
+                                    x:Name="contentShadow"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Style="{StaticResource ShadowStyle}">
+                                    <ContentPresenter.RenderTransform>
+                                        <TranslateTransform X="1.0" Y="1.0" />
+                                    </ContentPresenter.RenderTransform>
+                                </ContentPresenter>
+                                <ContentPresenter
+                                    x:Name="content"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center" />
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="BorderThickness" Value="0" />
+                                <Setter TargetName="border" Property="BorderBrush" Value="#FF4788c8" />
+                                <Setter Property="Foreground" Value="#FF4788c8" />
+                                <Setter Property="Background" Value="#E7F1FD" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#D7E6F9" />
+                                <Setter TargetName="content" Property="RenderTransform">
+                                    <Setter.Value>
+                                        <TranslateTransform Y="1.0" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsDefaulted" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="#FF282828" />
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="#FF282828" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Opacity" Value="0.7" />
+                                <Setter Property="Foreground" Value="Gray" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="CalculatorDeleteButton" TargetType="{x:Type Button}">
+            <Setter Property="OverridesDefaultStyle" Value="True" />
+            <Setter Property="Margin" Value="5" />
+            <Setter Property="Height" Value="50" />
+            <Setter Property="Width" Value="50" />
+            <Setter Property="FontFamily" Value="Verdana" />
+            <Setter Property="FontSize" Value="18px" />
+            <Setter Property="Focusable" Value="False" />
+            <Setter Property="FontWeight" Value="Normal" />
+            <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisual}" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border
+                            x:Name="border"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="LightGray"
+                            BorderThickness="1"
+                            CornerRadius="15"
+                            Padding="4,2">
+                            <Grid>
+                                <ContentPresenter
+                                    x:Name="contentShadow"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Style="{StaticResource ShadowStyle}">
+                                    <ContentPresenter.RenderTransform>
+                                        <TranslateTransform X="1.0" Y="1.0" />
+                                    </ContentPresenter.RenderTransform>
+                                </ContentPresenter>
+                                <ContentPresenter
+                                    x:Name="content"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center" />
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="BorderThickness" Value="0" />
+                                <Setter TargetName="border" Property="BorderBrush" Value="#FF4788c8" />
+                                <Setter Property="Foreground" Value="#FF4788c8" />
+                                <Setter Property="Background" Value="#FFF1FD" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#FFE9EB" />
+                                <Setter TargetName="content" Property="RenderTransform">
+                                    <Setter.Value>
+                                        <TranslateTransform Y="1.0" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsDefaulted" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="#FF282828" />
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="#FF282828" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Opacity" Value="0.7" />
+                                <Setter Property="Foreground" Value="Gray" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="CalculatorValidateButton" TargetType="{x:Type Button}">
+            <Setter Property="OverridesDefaultStyle" Value="True" />
+            <Setter Property="Margin" Value="5" />
+            <Setter Property="Height" Value="50" />
+            <Setter Property="Width" Value="50" />
+            <Setter Property="FontFamily" Value="Verdana" />
+            <Setter Property="FontSize" Value="18px" />
+            <Setter Property="Focusable" Value="False" />
+            <Setter Property="FontWeight" Value="Normal" />
+            <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisual}" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border
+                            x:Name="border"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="LightGray"
+                            BorderThickness="1"
+                            CornerRadius="15"
+                            Padding="4,2">
+                            <Grid>
+                                <ContentPresenter
+                                    x:Name="contentShadow"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Style="{StaticResource ShadowStyle}">
+                                    <ContentPresenter.RenderTransform>
+                                        <TranslateTransform X="1.0" Y="1.0" />
+                                    </ContentPresenter.RenderTransform>
+                                </ContentPresenter>
+                                <ContentPresenter
+                                    x:Name="content"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center" />
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="BorderThickness" Value="0" />
+                                <Setter TargetName="border" Property="BorderBrush" Value="#FF4788c8" />
+                                <Setter Property="Foreground" Value="#FF4788c8" />
+                                <Setter Property="Background" Value="Honeydew" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#E5FFE5" />
+                                <Setter TargetName="content" Property="RenderTransform">
+                                    <Setter.Value>
+                                        <TranslateTransform Y="1.0" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsDefaulted" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="#FF282828" />
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="#FF282828" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Opacity" Value="0.7" />
+                                <Setter Property="Foreground" Value="Gray" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="TextEditStyle" TargetType="{x:Type dxe:TextEdit}">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Margin" Value="100" />
+            <Setter Property="BorderBrush" Value="DarkGray" />
+            <Setter Property="Foreground" Value="#FFC3C57E" />
+            <Setter Property="KeyboardNavigation.TabNavigation" Value="None" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="Height" Value="40" />
+            <Setter Property="Width" Value="180" />
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Setter Property="AllowDrop" Value="True" />
+            <Setter Property="Border.CornerRadius" Value="7" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type dxe:TextEdit}">
+                        <ControlTemplate.Resources>
+                            <Storyboard x:Key="OnMouseOut">
+                                <DoubleAnimationUsingKeyFrames
+                                    BeginTime="00:00:00"
+                                    Storyboard.TargetName="Highlight"
+                                    Storyboard.TargetProperty="(UIElement.Opacity)">
+                                    <SplineDoubleKeyFrame Value="0" KeyTime="00:00:00.3000000" />
+                                </DoubleAnimationUsingKeyFrames>
+                            </Storyboard>
+                            <Storyboard x:Key="OnMouseIn">
+                                <DoubleAnimationUsingKeyFrames
+                                    BeginTime="00:00:00"
+                                    Storyboard.TargetName="Highlight"
+                                    Storyboard.TargetProperty="(UIElement.Opacity)">
+                                    <SplineDoubleKeyFrame Value="0.4" KeyTime="00:00:00.3000000" />
+                                </DoubleAnimationUsingKeyFrames>
+                            </Storyboard>
+                        </ControlTemplate.Resources>
+                        <Grid>
+                            <Rectangle
+                                x:Name="BG"
+                                Fill="{TemplateBinding Background}"
+                                RadiusX="7"
+                                RadiusY="7" />
+                            <Rectangle
+                                x:Name="Highlight"
+                                Fill="Transparent"
+                                Opacity="0" />
+                            <Border
+                                x:Name="Bd"
+                                Background="Transparent"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="{TemplateBinding Border.CornerRadius}"
+                                SnapsToDevicePixels="True">
+                                <DockPanel LastChildFill="True" SnapsToDevicePixels="True">
+                                    <dxe:ErrorControl x:Name="PART_ErrorPresenter" />
+                                    <!--<dxe:EditorControl DockPanel.Dock="Left" x:Name="PART_Content" Template="{Binding Path=(dxe:BaseEdit.OwnerEdit).ActualEditorControlTemplate, RelativeSource={RelativeSource Self}}"/>-->
+                                    <dxe:EditorControl
+                                        x:Name="PART_Content"
+                                        DockPanel.Dock="Left"
+                                        Focusable="False"
+                                        Foreground="#FFC3C57E"
+                                        Template="{Binding (dxe:BaseEdit.OwnerEdit).ActualEditorControlTemplate, RelativeSource={RelativeSource Self}}" />
+                                </DockPanel>
+                            </Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Foreground" Value="#FF6D6D6D" />
+                                <Setter Property="Background" Value="Black" />
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="#FF306CA0" />
+                                <Setter TargetName="Bd" Property="BorderThickness" Value="1" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard x:Name="OnMouseIn_BeginStoryboard">
+                                        <Storyboard>
+                                            <DoubleAnimationUsingKeyFrames
+                                                BeginTime="00:00:00"
+                                                Storyboard.TargetName="Highlight"
+                                                Storyboard.TargetProperty="(UIElement.Opacity)">
+                                                <SplineDoubleKeyFrame Value="0.4" KeyTime="00:00:00.3000000" />
+                                            </DoubleAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                                <Trigger.ExitActions>
+                                    <BeginStoryboard x:Name="OnMouseOut_BeginStoryboard">
+                                        <Storyboard>
+                                            <DoubleAnimationUsingKeyFrames
+                                                BeginTime="00:00:00"
+                                                Storyboard.TargetName="Highlight"
+                                                Storyboard.TargetProperty="(UIElement.Opacity)">
+                                                <SplineDoubleKeyFrame Value="0" KeyTime="00:00:00.3000000" />
+                                            </DoubleAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.ExitActions>
+                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="Validation.HasError" Value="True" />
+                                    <Condition Property="IsEnabled" Value="True" />
+                                </MultiTrigger.Conditions>
+                                <Setter Property="BorderBrush" Value="DarkKhaki" />
+                                <Setter Property="Background" Value="#0FC3C57E" />
+                                <Setter Property="Foreground" Value="Khaki" />
+                                <Setter Property="ToolTip" Value="{Binding (Validation.Errors)[0].ErrorContent, RelativeSource={RelativeSource Self}}" />
+                            </MultiTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Validation.ErrorTemplate">
+                <Setter.Value>
+                    <ControlTemplate />
+                </Setter.Value>
+            </Setter>
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="FontFamily" Value="Arial" />
+            <Setter Property="FontWeight" Value="Normal" />
+        </Style>
+        <Style x:Key="TextBlockStyle" TargetType="{x:Type TextBlock}">
+            <Setter Property="FontFamily" Value="/Market;component/#Almarai Bold" />
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="FontWeight" Value="DemiBold" />
+            <Setter Property="Foreground" Value="#BE000000" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+        </Style>
+        <dx:EntitySimpleDataSource
+            x:Key="EntitySimpleDataSource"
+            ContextType="{x:Type Persistence:MsContext}"
+            Path="Categories">
+            <dx:DesignDataManager.DesignData>
+                <dx:DesignDataSettings RowCount="5" />
+            </dx:DesignDataManager.DesignData>
+        </dx:EntitySimpleDataSource>
+        <!--#region cardHeaderTemplate-->
+        <DataTemplate x:Key="CardHeaderTemplate">
+            <Grid  Background="White" />
+        </DataTemplate>
+        <dx:EntityCollectionViewSource x:Key="EntityCollectionViewSource" Culture="en-US" ContextType="{x:Type Persistence:MsContext}" CollectionViewType="{x:Type ListCollectionView}" Path="Categories">
+            <dx:DesignDataManager.DesignData>
+                <dx:DesignDataSettings RowCount="5"/>
+            </dx:DesignDataManager.DesignData>
+        </dx:EntityCollectionViewSource>
+
+        <!--#endregion-->
+    </Window.Resources>
+
+    <Window.DataContext>
+        <views:MainWindowViewModel />
+    </Window.DataContext>
+
+    <!--    Grid Prensibale     -->
+
+    <Grid Background="#F2F2F2">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <!-- for navBar  -->
+            <RowDefinition Height="*" />
+            <!-- for content   -->
+        </Grid.RowDefinitions>
+        <!--#region Main Navigation Bar  -->
+        <dxb:BarContainerControl
+            Grid.Row="0"
+            dxb:BarManager.ToolbarGlyphSize="Custom"
+            FlowDirection="RightToLeft">
+            <dxb:MainMenuControl Background="#F2F2F2" Caption="Main Menu">
+                <!-- file -->
+                <dxb:BarSubItem
+                    BarItemDisplayMode="ContentAndGlyph"
+                    Content="ملف"
+                    Glyph="{dx:DXImage Image=BOFileAttachment_16x16.png}"
+                    Language="ar"
+                    LargeGlyph="{dx:DXImage Image=BO_FileAttachment_32x32.png}">
+                    <dxb:BarButtonItem
+                        CategoryName="File"
+                        Content="فتح"
+                        Description="Open database"
+                        KeyGesture="Ctrl+O" />
+                    <dxb:BarButtonItem CategoryName="File" Content="نسخة إحتياطية" />
+                    <dxb:BarItemSeparator />
+                    <dxb:BarButtonItem CategoryName="File" Content="تغيير كلمة المرور" />
+                    <dxb:BarButtonItem CategoryName="File" Content="تغيير المستعمل" />
+                    <dxb:BarItemSeparator />
+                    <dxb:BarButtonItem CategoryName="File" Content="الخيارات" />
+                    <dxb:BarItemSeparator />
+                    <dxb:BarButtonItem
+                        CategoryName="File"
+                        Content="خروج"
+                        Description="خروج من البرنامج"
+                        KeyGesture="Ctrl+X" />
+                </dxb:BarSubItem>
+                <!-- السلع -->
+                <dxb:BarSubItem
+                    BarItemDisplayMode="ContentAndGlyph"
+                    Content="السلع"
+                    Glyph="pack://application:,,,/DevExpress.Images.v18.2;component/DevAV/Actions/Buy_16x16.png"
+                    Language="ar"
+                    LargeGlyph="pack://application:,,,/DevExpress.Images.v18.2;component/DevAV/Actions/Buy_32x32.png">
+                    <dxb:BarButtonItem
+                        Content="إضافة"
+                        Description="إضافة سلعة جديدة"
+                        KeyGesture="Ctrl+N" />
+                    <dxb:BarButtonItem Content="قائمة" Description="قائمة السلع" />
+                    <dxb:BarItemSeparator />
+                    <dxb:BarButtonItem Content="بحث" Description="بحث عن السلع" />
+                    <dxb:BarItemSeparator />
+                    <dxb:BarButtonItem Content="التصنيف" Description="تصنيف السلع" />
+                    <dxb:BarButtonItem Content="تحديث لوحة المنتجات" />
+                </dxb:BarSubItem>
+                <dxb:BarSubItem Content="المبيعات">
+                    <dxb:BarButtonItem CategoryName="Sales" Content="القائمة" />
+                    <dxb:BarButtonItem CategoryName="Sales" Content="تسديد" />
+                </dxb:BarSubItem>
+                <dxb:BarSubItem Content="مساعدة">
+                    <dxb:BarButtonItem Content="عن البرنامج" />
+                </dxb:BarSubItem>
+            </dxb:MainMenuControl>
+            <!--            <dxb:ToolBarControl-->
+            <!--                Height="40"-->
+            <!--                x:Name="DroodToolBar"-->
+            <!--                AllowCustomizationMenu="False"-->
+            <!--                AllowHide="False"-->
+            <!--                AllowQuickCustomization="False"-->
+            <!--                Caption="File"-->
+            <!--                ShowDragWidget="False">-->
+            <!--                <dxb:BarButtonItem Alignment="Far" Content="Drood" />-->
+            <!--            </dxb:ToolBarControl>-->
+            <!--            <dxb:ToolBarControl-->
+            <!--                Caption="File"-->
+            <!--                Height="40"-->
+            <!--                x:Name="FileToolBar"-->
+            <!--                dxb:BarManager.ToolbarGlyphSize="Large"-->
+            <!--                AllowCustomizationMenu="False"-->
+            <!--                AllowHide="False"-->
+            <!--                AllowQuickCustomization="False"-->
+            <!--                Padding="2"-->
+            <!--                ShowDragWidget="False">-->
+            <!--             -->
+            <!--                <dxb:BarButtonItem-->
+            <!--                    Content="فتح"-->
+            <!--                    Description="Opens a file."-->
+            <!--                    Glyph="{dx:DXImage Image=LoadFrom_16x16.png}"-->
+            <!--                    Hint="Open"-->
+            <!--                    IsEnabled="False"-->
+            <!--                    KeyGesture="Ctrl+O"-->
+            <!--                    LargeGlyph="{dx:DXImage Image=LoadFrom_32x32.png}"-->
+            <!--                    Name="bOpen" />-->
+            <!--               -->
+            <!--~1~                <dxb:BarItemLinkSeparator />@1@-->
+            <!--               -->
+            <!--            </dxb:ToolBarControl>-->
+            <dxb:ToolBarControl
+                Height="30"
+                HorizontalAlignment="Right"
+                AllowCollapse="False"
+                AllowCustomizationMenu="False"
+                AllowDrop="False"
+                AllowHide="False"
+                AllowQuickCustomization="False"
+                AllowRemove="False"
+                AllowRename="False"
+                Focusable="False"
+                ShowDragWidget="False"
+                UseWholeRow="True">
+                <dxb:BarButtonItem Alignment="Near" Content="Print" />
+                <dxb:BarButtonItem Alignment="Far" Content="Print" />
+            </dxb:ToolBarControl>
+        </dxb:BarContainerControl>
+        <!-- #endregion-->
+        <!--       Content Principale     -->
+        <dxdo:DockLayoutManager
+            x:Name="DockLayoutManager"
+            Grid.Row="1"
+            Grid.ColumnSpan="2"
+            Background="#F2F2F2">
+            <dxdo:LayoutGroup
+                AllowSplitters="True"
+                ItemHeight="*"
+                LayoutGroupInterval="0"
+                LayoutItemInterval="0"
+                Orientation="Vertical">
+                <!--                3 panel : Good|Center|Calculateur   -->
+                <dxdo:LayoutGroup ItemHeight="0.97*" Orientation="Horizontal">
+                    <!--                    قائمة  المشتريات-->
+                    <dxdo:LayoutPanel
+                        x:Name="ListOfGood"
+                        MinWidth="400"
+                        AllowClose="False"
+                        AllowDrag="False"
+                        AllowHide="False"
+                        AllowSizing="True"
+                        Background="#F2F2F2"
+                        Caption="قائمة  المشتريات"
+                        CaptionHorizontalAlignment="Right"
+                        ItemHeight="1.24*"
+                        ItemWidth="*"
+                        ShowBorder="False"
+                        ShowCaption="False">
+                        <!--  show table of قائمة  المشتريات-->
+                        <dxg:GridControl
+                            x:Name="GridControl"
+                            AllowColumnMRUFilterList="False"
+                            AllowDrop="False"
+                            AllowInitiallyFocusedRow="False"
+                            AllowRecursiveSelectionForCollapsedGroups="False"
+                            AutoGenerateColumns="None"
+                            EnableSmartColumnsGeneration="True"
+                            FilterString="[Visits] &gt;= 5 and [City] = 'Los Angeles'"
+                            FlowDirection="RightToLeft"
+                            ItemsSource="{Binding Customers}"
+                            SelectionMode="Row"
+                            ShowBorder="True">
+                            <dxg:GridControl.View>
+                                <dxg:TableView
+                                    AllowEditing="False"
+                                    AllowGrouping="True"
+                                    ShowGroupPanel="False" />
+                            </dxg:GridControl.View>
+                            <dxg:GridColumn
+                                FieldName="Name"
+                                Header="الاسم"
+                                IsSmart="True" />
+                            <dxg:GridColumn
+                                FieldName="City"
+                                FrameworkElement.FlowDirection="LeftToRight"
+                                Header="NumberC"
+                                IsSmart="True" />
+                            <dxg:GridColumn FieldName="Visits">
+                                <dxg:GridColumn.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock TextTrimming="CharacterEllipsis">
+                                            <Run Text="product" />
+                                            <Run Text=" " />
+                                            <Run Text=" " />
+                                            <Run Text=" " />
+                                            <Run FontWeight="Bold" Text="Qt" />
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </dxg:GridColumn.HeaderTemplate>
+                                <dxg:GridColumn.EditSettings>
+                                    <dxe:ComboBoxEditSettings HorizontalContentAlignment="Left" FlowDirection="RightToLeft" />
+                                </dxg:GridColumn.EditSettings>
+                            </dxg:GridColumn>
+                            <dxg:GridColumn FieldName="Birthday" IsSmart="True">
+                                <dxg:GridColumn.EditSettings>
+                                    <dxe:DateEditSettings Mask="m" MaskUseAsDisplayFormat="True" />
+                                </dxg:GridColumn.EditSettings>
+                            </dxg:GridColumn>
+                        </dxg:GridControl>
+                    </dxdo:LayoutPanel>
+                    <!-- Center panel  -->
+                    <dxdo:LayoutPanel
+                        MinWidth="300"
+                        AllowClose="False"
+                        AllowDrag="False"
+                        AllowDrop="False"
+                        AllowFloat="False"
+                        AllowHide="False"
+                        AllowMaximize="False"
+                        AllowMinimize="False"
+                        AllowMove="False"
+                        AllowRename="False"
+                        AllowSelection="False"
+                        AllowSizing="True"
+                        Background="#F2F2F2"
+                        ItemHeight="0.88*"
+                        ItemWidth="1.79*"
+                        ShowBorder="False"
+                        ShowCaption="False"
+                        ShowControlBox="False">
+                        <Grid VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Grid Grid.Column="0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <Border
+                                    Grid.Row="0"
+                                    Background="White"
+                                    CornerRadius="10">
+                                    <Grid Height="auto" FlowDirection="RightToLeft">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Label
+                                            Grid.Column="0"
+                                            Margin="2 0"
+                                            Content="المبلغ:"
+                                            FlowDirection="RightToLeft"
+                                            FontSize="26.667"
+                                            FontWeight="DemiBold"
+                                            Foreground="#BE000000" />
+                                        <Grid
+                                            Grid.Column="1"
+                                            HorizontalAlignment="Center"
+                                            FlowDirection="RightToLeft">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <Label
+                                                Grid.Column="0"
+                                                Content="00"
+                                                FlowDirection="RightToLeft"
+                                                FontSize="30"
+                                                FontWeight="DemiBold"
+                                                Foreground="#BE000000" />
+                                            <Label
+                                                Grid.Column="1"
+                                                Margin="10 0"
+                                                Content="دج"
+                                                FlowDirection="RightToLeft"
+                                                FontSize="30"
+                                                FontWeight="DemiBold"
+                                                Foreground="#BE000000" />
+                                        </Grid>
+                                    </Grid>
+                                </Border>
+                                <Grid
+                                    Grid.Row="1"
+                                    Margin="0 20 10 0"
+                                    FlowDirection="RightToLeft">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid Grid.Column="0">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock
+                                            Grid.Row="0"
+                                            Grid.Column="0"
+                                            Style="{StaticResource TextBlockStyle}"
+                                            Text="إسم المنتج :" />
+                                        <TextBlock
+                                            Name="NameOfProductTextBlock"
+                                            Grid.Row="0"
+                                            Grid.Column="1"
+                                            Margin="10 0 10 10"
+                                            FontFamily="Verdana"
+                                            FontWeight="Light"
+                                            Foreground="#313131"
+                                            MaxWidth="160"
+                                            Style="{StaticResource TextBlockStyle}"
+                                            Text="{Binding Name_Product.Text}" 
+                                            />
+                                        <TextBlock
+                                            Grid.Row="1"
+                                            Grid.Column="0"
+                                            VerticalAlignment="Center"
+                                            Style="{StaticResource TextBlockStyle}"
+                                            Text="الرقم التسلسلي :" />
+                                        <dxe:TextEdit
+                                            Name="CodeBar"
+                                            Grid.Row="1"
+                                            Grid.Column="1"
+                                            Width="120"
+                                            Margin="10 0 10 10"
+                                            BorderBrush="LightGray"
+                                            FlowDirection="RightToLeft"
+                                            FontFamily="Verdana"
+                                            FontSize="16"
+                                            EditValue="{Binding CodeBar.EditValue, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"
+                                            EditValueChanged="{DXEvent SearchProductWithCodeBar()}"
+                                            Foreground="Black"
+                                            Style="{StaticResource TextEditStyle}"/>
+                                        <TextBlock
+                                            Grid.Row="2"
+                                            Grid.Column="0"
+                                            Style="{StaticResource TextBlockStyle}"
+                                            Text="سعر الوحدة :" />
+                                        <TextBlock
+                                            Grid.Row="2"
+                                            Grid.Column="1"
+                                            Margin="10 0 10 10"
+                                            FontFamily="Verdana"
+                                            Foreground="#313131"
+                                            Style="{StaticResource TextBlockStyle}"
+                                            Text="250" />
+                                        <TextBlock
+                                            Grid.Row="3"
+                                            Grid.Column="0"
+                                            VerticalAlignment="Center"
+                                            Style="{StaticResource TextBlockStyle}"
+                                            Text="الكمية :" />
+                                        <dxe:TextEdit
+                                            x:Name="Qt_TextEdit"
+                                            Grid.Row="3"
+                                            Grid.Column="1"
+                                            Width="120"
+                                            Margin="10 0 10 10"
+                                            BorderBrush="LightGray"
+                                            FlowDirection="RightToLeft"
+                                            FontFamily="Verdana"
+                                            FontSize="20"
+                                            Foreground="#313131"
+                                            Style="{StaticResource TextEditStyle}"
+                                            Text="4" />
+                                        <TextBlock
+                                            Grid.Row="4"
+                                            Grid.Column="0"
+                                            Style="{StaticResource TextBlockStyle}"
+                                            Text="السعر الإجمالي :" />
+                                        <TextBlock
+                                            Grid.Row="4"
+                                            Grid.Column="1"
+                                            Margin="10 0 10 0"
+                                            FontFamily="Verdana"
+                                            Foreground="#313131"
+                                            Style="{StaticResource TextBlockStyle}"
+                                            Text="120.00 da" />
+                                    </Grid>
+                                    <Image
+                                        Name="ImagePrincipal"
+                                        Grid.Column="1"
+                                        Width="200"
+                                        Height="200"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Top"
+                                        Source="{Binding Img.Source}"
+                                        Stretch="Uniform" />
+                                </Grid>
+                            </Grid>
+                            <Border
+                                x:Name="BorderCalculator"
+                                Grid.Column="1"
+                                Width="190"
+                                Height="280"
+                                Margin="5 0 5 0"
+                                HorizontalAlignment="Right"
+                                CornerRadius="10"
+                                Padding="5 5 5 0">
+                                <Grid
+                                    Width="200"
+                                    Height="275"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Top">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <!-- for navBar  -->
+                                        <RowDefinition Height="*" />
+                                        <!-- for content   -->
+                                    </Grid.RowDefinitions>
+                                    <dxe:TextEdit
+                                        x:Name="tbPositionCursor"
+                                        Grid.Row="0"
+                                        Margin="0 2 0 0"
+                                        BorderBrush="LightGray"
+                                        EditValueChanged="TbPositionCursor_OnEditValueChanged"
+                                        FlowDirection="RightToLeft"
+                                        FontFamily="Verdana"
+                                        FontSize="20"
+                                        Foreground="Black"
+                                        PreviewTextInput="bobo"
+                                        Style="{StaticResource TextEditStyle}" />
+                                    <Grid
+                                        Grid.Row="1"
+                                        Margin=" 0 5 0 0"
+                                        HorizontalAlignment="Center">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <Button
+                                            Grid.Row="0"
+                                            Grid.Column="2"
+                                            Click="Btn_9_OnClick"
+                                            Content="9"
+                                            Style="{StaticResource CalculatorButton}" />
+                                        <Button
+                                            Grid.Row="0"
+                                            Grid.Column="1"
+                                            Click="Btn_8_OnClick"
+                                            Content="8"
+                                            Style="{StaticResource CalculatorButton}" />
+                                        <Button
+                                            Grid.Row="0"
+                                            Grid.Column="0"
+                                            Click="Btn_7_OnClick"
+                                            Content="7"
+                                            Style="{StaticResource CalculatorButton}" />
+                                        <Button
+                                            Grid.Row="1"
+                                            Grid.Column="2"
+                                            Click="Btn_6_OnClick"
+                                            Content="6"
+                                            Style="{StaticResource CalculatorButton}" />
+                                        <Button
+                                            Grid.Row="1"
+                                            Grid.Column="1"
+                                            Click="Btn_5_OnClick"
+                                            Content="5"
+                                            Style="{StaticResource CalculatorButton}" />
+                                        <Button
+                                            Grid.Row="1"
+                                            Grid.Column="0"
+                                            Click="Btn_4_OnClick"
+                                            Content="4"
+                                            Style="{StaticResource CalculatorButton}" />
+                                        <Button
+                                            Grid.Row="2"
+                                            Grid.Column="2"
+                                            Click="Btn_3_OnClick"
+                                            Content="3"
+                                            Style="{StaticResource CalculatorButton}" />
+                                        <Button
+                                            Grid.Row="2"
+                                            Grid.Column="1"
+                                            Click="Btn_2_OnClick"
+                                            Content="2"
+                                            Style="{StaticResource CalculatorButton}" />
+                                        <Button
+                                            Grid.Row="2"
+                                            Grid.Column="0"
+                                            Click="Btn_1_OnClick"
+                                            Content="1"
+                                            Style="{StaticResource CalculatorButton}" />
+                                        <Button
+                                            Grid.Row="3"
+                                            Grid.Column="0"
+                                            Click="Btn_false_OnClick"
+                                            Style="{StaticResource CalculatorDeleteButton}">
+                                            <Path
+                                                Width="20"
+                                                Height="20"
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Center"
+                                                Data="M 7 4 C 6.744125 4 6.4879687 4.0974687 6.2929688 4.2929688 L 4.2929688 6.2929688 C 3.9019687 6.6839688 3.9019687 7.3170313 4.2929688 7.7070312 L 11.585938 15 L 4.2929688 22.292969 C 3.9019687 22.683969 3.9019687 23.317031 4.2929688 23.707031 L 6.2929688 25.707031 C 6.6839688 26.098031 7.3170313 26.098031 7.7070312 25.707031 L 15 18.414062 L 22.292969 25.707031 C 22.682969 26.098031 23.317031 26.098031 23.707031 25.707031 L 25.707031 23.707031 C 26.098031 23.316031 26.098031 22.682969 25.707031 22.292969 L 18.414062 15 L 25.707031 7.7070312 C 26.098031 7.3170312 26.098031 6.6829688 25.707031 6.2929688 L 23.707031 4.2929688 C 23.316031 3.9019687 22.682969 3.9019687 22.292969 4.2929688 L 15 11.585938 L 7.7070312 4.2929688 C 7.5115312 4.0974687 7.255875 4 7 4 z"
+                                                Fill="#FC5252"
+                                                Stretch="Fill" />
+                                        </Button>
+                                        <Button
+                                            Grid.Row="3"
+                                            Grid.Column="1"
+                                            Click="Btn_0_OnClick"
+                                            Content="0"
+                                            Style="{StaticResource CalculatorButton}" />
+                                        <Button
+                                            Grid.Row="3"
+                                            Grid.Column="2"
+                                            Click="Btn_validate_OnClick"
+                                            Style="{StaticResource CalculatorValidateButton}">
+                                            <Path
+                                                Width="20"
+                                                Height="20"
+                                                Data="M 42.875 8.625 C 42.84375 8.632813 42.8125 8.644531 42.78125 8.65625 C 42.519531 8.722656 42.292969 8.890625 42.15625 9.125 L 21.71875 40.8125 L 7.65625 28.125 C 7.410156 27.8125 7 27.675781 6.613281 27.777344 C 6.226563 27.878906 5.941406 28.203125 5.882813 28.597656 C 5.824219 28.992188 6.003906 29.382813 6.34375 29.59375 L 21.25 43.09375 C 21.46875 43.285156 21.761719 43.371094 22.050781 43.328125 C 22.339844 43.285156 22.59375 43.121094 22.75 42.875 L 43.84375 10.1875 C 44.074219 9.859375 44.085938 9.425781 43.875 9.085938 C 43.664063 8.746094 43.269531 8.566406 42.875 8.625 Z"
+                                                Fill="#51FD52"
+                                                Stretch="Fill"
+                                                Stroke="#51FD52"
+                                                StrokeThickness="4" />
+                                        </Button>
+                                    </Grid>
+                                </Grid>
+                            </Border>
+                            <!--                            <TextBlock  Grid.Row="1" Name="lblStyled" Text="Hello, styled world!" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center">-->
+                            <!--                                    <TextBlock.Style>-->
+                            <!--                                        <Style TargetType="TextBlock">-->
+                            <!--                                            <Style.Triggers>-->
+                            <!--                                                <EventTrigger RoutedEvent="MouseEnter">-->
+                            <!--                                                    <EventTrigger.Actions>-->
+                            <!--                                                        <BeginStoryboard>-->
+                            <!--                                                            <Storyboard>-->
+                            <!--                                                                <DoubleAnimation Duration="0:0:0.600" Storyboard.TargetProperty="FontSize" To="28" />-->
+                            <!--                                                            </Storyboard>-->
+                            <!--                                                        </BeginStoryboard>-->
+                            <!--                                                    </EventTrigger.Actions>-->
+                            <!--                                                </EventTrigger>-->
+                            <!--                                                <EventTrigger RoutedEvent="MouseLeave">-->
+                            <!--                                                    <EventTrigger.Actions>-->
+                            <!--                                                        <BeginStoryboard>-->
+                            <!--                                                            <Storyboard>-->
+                            <!--                                                                <DoubleAnimation Duration="0:0:0.400" Storyboard.TargetProperty="FontSize" To="18" />-->
+                            <!--                                                            </Storyboard>-->
+                            <!--                                                        </BeginStoryboard>-->
+                            <!--                                                    </EventTrigger.Actions>-->
+                            <!--                                                </EventTrigger>-->
+                            <!--                                            </Style.Triggers>-->
+                            <!--                                        </Style>-->
+                            <!--                                    </TextBlock.Style>-->
+                            <!--                                </TextBlock>-->
+                        </Grid>
+                    </dxdo:LayoutPanel>
+                    <dxdo:LayoutGroup />
+                    <!--                        <dxdo:LayoutPanel-->
+                    <!--                            MinWidth="200"-->
+                    <!--                            MinHeight="300"-->
+                    <!--                            Caption="Panel_Right"-->
+                    <!--                            ItemHeight="1.6*"-->
+                    <!--                            ItemWidth="0.74*" />-->
+                </dxdo:LayoutGroup>
+                <dxdo:LayoutPanel
+                    x:Name="BLayoutPanel"
+                    MaxHeight="550"
+                    AllowClose="False"
+                    AllowDrag="False"
+                    AllowDrop="False"
+                    AllowFloat="False"
+                    AllowHide="False"
+                    AllowMaximize="False"
+                    AllowMinimize="False"
+                    AllowRename="False"
+                    AllowSelection="False"
+                    CaptionHorizontalAlignment="Left"
+                    FlowDirection="RightToLeft"
+                    ItemHeight="1.03*"
+                    ShowBorder="True"
+                    ShowCaption="False">
+
+                    <Grid>
+                        <Grid >
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
+                                Grid.Column="0"
+                                VerticalAlignment="Center"
+                                FontSize="16"
+                                FontWeight="ExtraBlack"
+                                Text="المنتجات" />
+                                <!--                                            <Button-->
+                                <!--												Width="50"-->
+                                <!--												Background="#1AEBC9"-->
+                                <!--												Foreground="White"-->
+                                <!--                                                Content="345"/>-->
+                                <!--                                            <dxe:TextEdit Width="150" FontSize="16" EditValue="search"/>-->
+                                <TextBlock
+                                Grid.Column="1"
+                                Margin="50 0 0 0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                FontSize="16"
+                                    FontWeight="Normal"
+                                Text="الصنف " />
+                                <dxe:ComboBoxEdit
+                                    Grid.Column="2"
+                                    MinWidth="120"
+                                    DisplayMember="NameCategorie"
+                                    EditValue="All"
+                                    Foreground="#6C6C6C"
+                                    EditValueChanged="{DXEvent 'ChangeSelectedCategorie()'}"
+                                    FontWeight="Normal"
+                                    FontSize="13.333"
+                                    ImmediatePopup="True"
+                                    IsTextEditable="False"
+                                    SelectedIndex="1"
+                                    ItemsSource="{Binding CmboCategories}"
+                                    ValueMember="IdCategorie" IsSynchronizedWithCurrentItem="True">
+                                    <dxe:ComboBoxEdit.StyleSettings>
+                                        <dxe:ComboBoxStyleSettings />
+                                    </dxe:ComboBoxEdit.StyleSettings>
+                                </dxe:ComboBoxEdit>
+                            </Grid>
+
+                            <dxg:GridControl
+                            Grid.Row="1"
+                            FlowDirection="RightToLeft"
+                            ItemsSource= "{Binding mProducts}"
+                            SelectionMode="None"
+                            ShowBorder="False">
+                                <dxg:GridControl.View>
+                                    <dxg:CardView
+                                    AllowCardResizing="False"
+                                    AllowEditing="False"
+                                    AllowMoveColumnToDropArea="False"
+                                    AllowPaging="True"
+                                    CardAlignment="Center"
+                                    CardHeaderTemplate="{StaticResource CardHeaderTemplate}"
+                                    CardLayout="Rows"
+                                    ColumnFilterPopupMode="ExcelSmart"
+                                    EditorButtonShowMode="ShowAlways"
+                                    FixedSize="210"
+                                    Focusable="True"
+                                    MinFixedSize="150"
+                                        
+                                    
+                                    Name="ProductCardView"
+                                    NavigationStyle="{Binding Path=SelectedItem.Tag, ElementName=templateSelectorListBox}"
+                                    PageSize="10"
+                                    MouseDoubleClick="{DXEvent 'testMethod($dx:EventArgsToDataRowConverter.GetDataRow(@args))'}"
+                                    SeparatorThickness="0"
+                                  
+                                        ShowCardExpandButton="False"
+                                    ShowColumnHeaders="False"
+                                    
+                                    ShowFocusedRectangle="True"
+                                    ShowGroupedColumns="True"
+                                    ShowGroupPanel="False"
+                                    ShowSearchPanelMode="Never"
+                                    ShowSelectionRectangle="True" />
+                                </dxg:GridControl.View>
+                                <!--#region Columns-->
+                                <!--Image-->
+                                <dxg:GridColumn
+                                AllowFocus="False"
+                                FieldName="Image"
+                                ReadOnly="True"
+                                Header="صورة">
+                                    <dxg:GridColumn.EditSettings>
+                                        <dxe:ImageEditSettings MaxWidth="115"/>
+                                    </dxg:GridColumn.EditSettings>
+                                </dxg:GridColumn>
+                                <dxg:GridColumn
+                                ReadOnly="True"
+                                AllowBestFit="false"
+                                AllowFocus="False"
+                                ColumnChooserHeaderCaption=" "
+                                FieldName="NameProduct"
+                                Header="اسم" />
+                                <dxg:GridColumn FieldName="Price" Header="سعر" AllowFocus="False" ReadOnly="True" HorizontalHeaderContentAlignment="Center">
+                                    <dxg:GridColumn.EditSettings>
+                                        <dxe:TextEditSettings
+                                        HorizontalContentAlignment="Center"
+                                        DisplayFormat="0 دج"
+                                        MaskType="Numeric" />
+                                    </dxg:GridColumn.EditSettings>
+                                </dxg:GridColumn>
+                            </dxg:GridControl>
+                        </Grid>
+                    </Grid>
+                </dxdo:LayoutPanel>
+            </dxdo:LayoutGroup>
+        </dxdo:DockLayoutManager>
+    </Grid>
+
+</Window>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
