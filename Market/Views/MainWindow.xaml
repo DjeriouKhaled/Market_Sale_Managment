@@ -800,7 +800,7 @@
                                             FontFamily="Verdana"
                                             Foreground="#313131"
                                             Style="{StaticResource TextBlockStyle}"
-                                            Text="250" />
+                                           Text="{Binding prix_unit_Product.Text}" />
                                         <TextBlock
                                             Grid.Row="3"
                                             Grid.Column="0"
@@ -1145,7 +1145,7 @@
                                 ColumnChooserHeaderCaption=" "
                                 FieldName="NameProduct"
                                 Header="اسم" />
-                                <dxg:GridColumn FieldName="Price" Header="سعر" AllowFocus="False" ReadOnly="True" HorizontalHeaderContentAlignment="Center">
+                                <dxg:GridColumn FieldName="Price_unit" Header="سعر" AllowFocus="False" ReadOnly="True" HorizontalHeaderContentAlignment="Center">
                                     <dxg:GridColumn.EditSettings>
                                         <dxe:TextEditSettings
                                         HorizontalContentAlignment="Center"

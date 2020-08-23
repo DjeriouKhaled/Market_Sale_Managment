@@ -20,43 +20,14 @@ using System.Windows.Media.Imaging;
 
 namespace Market.Views
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    /// 
     public partial class MainWindow 
     {
-       // private MainWindowViewModel mainWindowViewModel;
         public MainWindow()
         {
-           // mainWindowViewModel =new MainWindowViewModel();
             InitializeComponent();
-            
-           
+          
             using (var U1 =new UnitOfWork(new MsContext()))
             {
-                
-//                User u = new User { NameUser = "khaled", Password = "1234" };
-//                User u1 = new User { NameUser = "imad", Password = "1234" };
-//                U1.User.Add(u);
-//
-//                U1.User.Add(u1);
-//                U1.Complete();
-                
-//                U1.User.Remove(U1.User.Get(3));
-//                U1.User.Remove(U1.User.Get(4));
-//                U1.Complete();
-//                if (U1.User.GetAll() != null)
-//                {
-//                    foreach (User user in U1.User.GetAll())
-//                    {
-//                        Console.WriteLine(user.IdUser + " " + user.NameUser + " " + user.Password);
-//                    }
-//                    Console.Write("\n\n\n\n\n");
-//                }
-
-//                U1.Product.Add(new Core.Domain.Product() {NameProduct = "xjkch",Prix = 125});
-//                U1.Complete();
                 if (U1.Product.GetCount()!=0)
                 {
                     foreach (Core.Domain.Product user in U1.Product.GetAll())
@@ -66,9 +37,6 @@ namespace Market.Views
                         Console.WriteLine(user.NameProduct + " " + user.IdProduct + " " + U1.Categorie.Get(user.IdCategorie).NameCategorie + " " + user.Prix);
                     }
                 }
-               
-               
-
             }
 
            
@@ -91,8 +59,8 @@ namespace Market.Views
             tbPositionCursor.Text = tbPositionCursor.Text.Trim();
             tbPositionCursor.Select(tbPositionCursor.Text.Length , 0);
             
-            GridLength g =new GridLength(BLayoutPanel.ItemHeight.Value+0.11,GridUnitType.Star);
-            BLayoutPanel.ItemHeight = g;
+         //   GridLength g =new GridLength(BLayoutPanel.ItemHeight.Value+0.11,GridUnitType.Star);
+         //   BLayoutPanel.ItemHeight = g;
         }
 
         private void Btn_false_OnClick(object sender, RoutedEventArgs e)
@@ -214,11 +182,13 @@ namespace Market.Views
         public int IdProduct { get; set; }
         public string NameProduct { get; set; }
 
-        public string Category { get; set; }
+        public string CodeBar { get; set; }
+
+        public int? IdCategory { get; set; }
 
         public BitmapImage Image { get; set; }
 
-        public int Price { get; set; }
+        public int Price_unit { get; set; }
 
     }
 
@@ -226,22 +196,17 @@ namespace Market.Views
 
     public class MainWindowViewModel : BindableBase
     {
+
         public ClientViewModel ClientVM;
+        // solo
         public System.Windows.Controls.Image Img { get; set; }=new System.Windows.Controls.Image();
         public  TextBlock Name_Product { get; set; }=new TextBlock();
         public  TextEdit CodeBar { get; set; }=new TextEdit();
 
+        public TextBlock prix_unit_Product { get; set; } = new TextBlock();
 
-        /// <summary>
-        ///  for INotifyPropertyChanged
-        /// </summary>
-
-
-        /// <summary>
-        ///  view Model for real database 
-        /// </summary>
-        public List<Product> mProducts { get; private set; } = new List<Product>();
-
+        // Collections
+        public ObservableCollection<Product> mProducts { get; private set; } 
         
         public ObservableCollection<CmboCategorie> CmboCategories { get; private set; }
         
@@ -251,7 +216,7 @@ namespace Market.Views
 
 
 
-        public BitmapImage ImageFromBuffer(Byte[] bytes)
+        public BitmapImage ImageFromBuffer(byte[] bytes)
         {
             MemoryStream stream = new MemoryStream(bytes);
             BitmapImage image = new BitmapImage();
@@ -266,7 +231,8 @@ namespace Market.Views
         public MainWindowViewModel()
         {
             CmboCategories = new ObservableCollection<CmboCategorie>();
-          // ClientVM = new ClientViewModel(this);
+            mProducts = new ObservableCollection<Product>();
+            // ClientVM = new ClientViewModel(this);
 
             #region Costomer List fake data
             var people = new List<Customer>
@@ -308,37 +274,37 @@ namespace Market.Views
 
             using (var unitOfWork = new UnitOfWork(new MsContext()))
             {
-                IList<Product> p = new List<Product>();
+                // TODO : 
                 var products = unitOfWork.Product.GetAll();
                 if (products!=null)
                 {
                     foreach (var product in products)
                     {
-                       BitmapImage image1 = ImageFromBuffer(product.Img);
-                        string scat;
-                        try
-                        {
-                           scat= unitOfWork.Categorie.Get(product.IdCategorie).NameCategorie;
-                        }
-                        catch (Exception e)
-                        {
-                            scat = null;
-
-                        }
-                        p.Add(new Product() { IdProduct = product.IdProduct, NameProduct = product.NameProduct, Category = scat, Image = image1, Price = product.Prix });
+                        mProducts.Add(
+                            new Product() {
+                                  IdProduct = product.IdProduct,
+                                  NameProduct = product.NameProduct,
+                                  CodeBar=product.BarCode,
+                                  IdCategory = product.IdCategorie,
+                                  Image = ImageFromBuffer(product.Img),
+                                  Price_unit = product.Prix });
                     }
-                    mProducts.AddRange(p);
+                    
                 }
 
                
+
                 var categories = unitOfWork.Categorie.GetAll();
-                CmboCategories.Add(new CmboCategorie() { Id = 0, NameCategorie = "All" });
-                 
+                CmboCategories.Add(new CmboCategorie() { Id = -1, NameCategorie = "All" });
+             
                 if (categories!=null)
                 {
                     foreach (Categorie category in categories)
                     {
-                        CmboCategories.Add(new CmboCategorie() { Id = category.IdCategorie+1,NameCategorie = category.NameCategorie});
+                        CmboCategories.Add(new CmboCategorie() {
+                                                Id = category.IdCategorie,
+                                                NameCategorie = category.NameCategorie});
+                      
                     }
                 }
               
@@ -409,8 +375,8 @@ namespace Market.Views
             //   mProducts.RemoveAll(df => true);
 
 
-            CmboCategorie cmbo = new CmboCategorie() { Id = 7, NameCategorie = "jscsma" };
-            CmboCategories.Add(cmbo);
+          //  CmboCategorie cmbo = new CmboCategorie() { Id = 7, NameCategorie = "jscsma" };
+           // CmboCategories.Add(cmbo);
             //   NotifyFullNameChangedRaisePropertyChanged(nameof(CmboCategories));
             // CmboCategories.RaisePropertiesChanged();
             // MessageBox.Show("Detail info"+mProducts.Count);
@@ -422,6 +388,7 @@ namespace Market.Views
         {
             Img.Source = p.Image;
             Name_Product.Text = p.NameProduct;
+            prix_unit_Product.Text = p.Price_unit.ToString();
             // MessageBox.Show(p.IdProduct.ToString());
 
         }
