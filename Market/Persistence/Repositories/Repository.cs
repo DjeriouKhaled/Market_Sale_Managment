@@ -71,10 +71,23 @@ namespace Market.Persistence.Repositories
             return Context.Set<TEntity>().SingleOrDefault(predicate);
         }
 
+
+
         public void Add(TEntity entity)
         {
-            Context.Set<TEntity>().Add(entity);
+            try
+            {
+                Context.Set<TEntity>().Add(entity);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+           
         }
+
+
 
         public void AddRange(IEnumerable<TEntity> entities)
         {

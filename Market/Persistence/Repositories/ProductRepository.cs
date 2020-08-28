@@ -13,12 +13,9 @@ namespace Market.Persistence.Repositories
         public ProductRepository(DbContext context) : base(context)
         {
         }
-
         
-
         public string GetTheCategorieProduct(Product product)
         {
-
             MsContext.Entry(product).Reference(s=>s.Categorie).Load();
             MsContext.Entry(product).Reference(s => s.Categorie)
                 .Query()

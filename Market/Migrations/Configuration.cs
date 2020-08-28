@@ -42,25 +42,25 @@ namespace Market.Migrations
             #endregion
 
             #region Add Product
-            BitmapImage image1 = new BitmapImage(new Uri("E:\\Adobe\\Projects\\xd\\MM\\1.jpg", UriKind.Absolute));
-            BitmapImage image2 = new BitmapImage(new Uri("E:\\Adobe\\Projects\\xd\\MM\\2.jpg", UriKind.Absolute));
+            BitmapImage image1 = new BitmapImage(new Uri("E:\\Adobe\\Projects\\xd\\MM\\1.png", UriKind.Absolute));
+            BitmapImage image2 = new BitmapImage(new Uri("E:\\Adobe\\Projects\\xd\\MM\\2.png", UriKind.Absolute));
             BitmapImage image3 = new BitmapImage(new Uri("E:\\Adobe\\Projects\\xd\\MM\\3.jpg", UriKind.Absolute));
             BitmapImage image4 = new BitmapImage(new Uri("E:\\Adobe\\Projects\\xd\\MM\\4.png", UriKind.Absolute));
             BitmapImage image5 = new BitmapImage(new Uri("E:\\Adobe\\Projects\\xd\\MM\\5.png", UriKind.Absolute));
-            BitmapImage image6 = new BitmapImage(new Uri("E:\\Adobe\\Projects\\xd\\MM\\6.jpg", UriKind.Absolute));
-            BitmapImage image8 = new BitmapImage(new Uri("E:\\Adobe\\Projects\\xd\\MM\\8.jpg", UriKind.Absolute));
+            BitmapImage image6 = new BitmapImage(new Uri("E:\\Adobe\\Projects\\xd\\MM\\6.png", UriKind.Absolute));
+            BitmapImage image8 = new BitmapImage(new Uri("E:\\Adobe\\Projects\\xd\\MM\\8.png", UriKind.Absolute));
 
 
 
             var productList = new List<Product>
             {
-                new Product { NameProduct ="Pure-XS" , IdCategorie = 1, Prix = 120,Img =ImageToByteArray(Bitmap_To_Image(image1)) },
-                new Product { NameProduct ="Miss Dior" , IdCategorie = 2, Prix = 12,Img =ImageToByteArray(Bitmap_To_Image(image2))},
-                new Product { NameProduct ="Dolce & Gabbana" ,IdCategorie = 1, Prix = 3847,Img = ImageToByteArray(Bitmap_To_Image(image3))},
-                new Product { NameProduct ="Chanel Chance " , IdCategorie = 2, Prix = 21,Img = ImageToByteArray(Bitmap_To_Image(image4))},
-                new Product { NameProduct ="Absolutely Blooming 5" , IdCategorie = 2 , Prix = 834,Img = ImageToByteArray(Bitmap_To_Image(image5))},
-                new Product { NameProduct ="BLEU DE CHANEL" ,IdCategorie = 1, Prix = 3847,Img = ImageToByteArray(Bitmap_To_Image(image6))},
-                new Product { NameProduct ="ARMANI 9" , IdCategorie = 1 , Prix = 834,Img = ImageToByteArray(Bitmap_To_Image(image8))},
+                new Product { NameProduct ="Pure-XS" , IdCategorie = 1,BarCode  = "0001",Prix = 120,Img =ImageToByteArray(Bitmap_To_Image(image1)) },
+                new Product { NameProduct ="Miss Dior" , IdCategorie = 2,BarCode  = "0002", Prix = 12,Img =ImageToByteArray(Bitmap_To_Image(image2))},
+                new Product { NameProduct ="Dolce & Gabbana" ,IdCategorie = 1,BarCode  = "0003", Prix = 3847,Img = ImageToByteArray(Bitmap_To_Image(image3))},
+                new Product { NameProduct ="Chanel Chance " , IdCategorie = 2,BarCode  = "0004", Prix = 21,Img = ImageToByteArray(Bitmap_To_Image(image4))},
+                new Product { NameProduct ="Absolutely 5" , IdCategorie = 2 ,BarCode  = "0005", Prix = 834,Img = ImageToByteArray(Bitmap_To_Image(image5))},
+                new Product { NameProduct ="BLEU DE CHANEL" ,IdCategorie = 1,BarCode  = "0006", Prix = 3847,Img = ImageToByteArray(Bitmap_To_Image(image6))},
+                new Product { NameProduct ="ARMANI 9" , IdCategorie = 1 , BarCode  = "0007",Prix = 834,Img = ImageToByteArray(Bitmap_To_Image(image8))},
 
 
             };

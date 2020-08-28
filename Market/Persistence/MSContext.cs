@@ -7,7 +7,6 @@ namespace Market.Persistence
     {
         public MsContext() : base("MsContext")
         {
-           
             Configuration.LazyLoadingEnabled = false;
         }
 
@@ -29,23 +28,24 @@ namespace Market.Persistence
 
 
             //HasOptional: mark Categorie property optional in Product entity , can save product without Categorie
-            modelBuilder.Entity<BuyDetail>()
-                .HasOptional(s1 => s1.Product);
+//            modelBuilder.Entity<BuyDetail>()
+//                .HasOptional(s1 => s1.Product);
 
             modelBuilder.Entity<Product>()
                 .HasOptional(s => s.Categorie);
+//            
+//            modelBuilder.Entity<Buy>()
+//                .HasOptional(s => s.User);
+//
+//            modelBuilder.Entity<Buy>()
+//                .HasOptional(s => s.Client);
 
-            modelBuilder.Entity<Buy>()
-                .HasOptional(s => s.Client);
-            
-            modelBuilder.Entity<Buy>()
-                .HasOptional(s => s.User);
-            
-            modelBuilder.Entity<BuyDetail>()
-                .HasRequired(s => s.Vent);
+//            modelBuilder.Entity<BuyDetail>()
+//                .HasRequired(s => s.Vent);
             
             modelBuilder.Entity<Remboursement>()
                 .HasRequired(s => s.Client);
+
         }
     }
 }

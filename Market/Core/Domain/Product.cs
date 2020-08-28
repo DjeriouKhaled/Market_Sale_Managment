@@ -23,7 +23,7 @@ namespace Market.Core.Domain
         public int Qte { get; set; }
 
         public bool HasBarCode { get; set; }
-
+   
         public string BarCode { get; set; }
 
         public int QteRisque { get; set; }

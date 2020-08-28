@@ -7,6 +7,8 @@ namespace Market.Core
     {
         IUser User { get; }
 
+        ISetting Setting { get; }
+
         IProduct Product { get; }
         int Complete();
     }

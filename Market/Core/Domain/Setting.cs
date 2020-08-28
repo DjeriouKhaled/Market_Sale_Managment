@@ -7,6 +7,7 @@ namespace Market.Core.Domain
         [Key]
         public int IdSetting { get; set; }
         public string Version { get; set; }
+       
 
     }
 }

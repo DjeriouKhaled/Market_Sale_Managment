@@ -3,7 +3,7 @@
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class create_first : DbMigration
+    public partial class first_release : DbMigration
     {
         public override void Up()
         {
@@ -89,6 +89,7 @@
                     {
                         IdSetting = c.Int(nullable: false, identity: true),
                         Version = c.String(),
+                        IdLastBuy = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.IdSetting);
             
@@ -103,35 +104,29 @@
                 .PrimaryKey(t => t.IdUser);
             
             CreateTable(
-                "dbo.BuyDetails",
+                "dbo.BuyDetail",
                 c => new
                     {
-                        IdVentDetail = c.Int(nullable: false),
-                        IdVent_ForeignKey = c.Int(nullable: false),
-                        IdProduct_ForeignKey = c.Int(nullable: false),
-                        Qte = c.Int(nullable: false),
-                        PrixUnit = c.Int(nullable: false),
+                        BuyDetailID = c.Int(nullable: false),
+                        IdBuyForeignKey = c.Int(nullable: false),
+                        IdProductForeignKey = c.Int(),
+                        Qte = c.Int(),
+                        PrixUnit = c.Int(),
                         PrixTotal = c.Int(nullable: false),
-                        Product_IdProduct = c.Int(),
-                        Vent_IdVent = c.Int(nullable: false),
                     })
-                .PrimaryKey(t => new { t.IdVentDetail, t.IdVent_ForeignKey })
-                .ForeignKey("dbo.Products", t => t.Product_IdProduct)
-                .ForeignKey("dbo.Buys", t => t.Vent_IdVent, cascadeDelete: true)
-                .Index(t => t.Product_IdProduct)
-                .Index(t => t.Vent_IdVent);
+                .PrimaryKey(t => new { t.BuyDetailID, t.IdBuyForeignKey });
             
             CreateTable(
-                "dbo.Buys",
+                "dbo.Buy",
                 c => new
                     {
-                        IdVent = c.Int(nullable: false, identity: true),
+                        BuyID = c.Int(nullable: false, identity: true),
                         Montant = c.Int(nullable: false),
-                        DateVent = c.DateTime(nullable: false),
+                        DateBuy = c.DateTime(nullable: false),
                         Client_IdClient = c.Int(),
                         User_IdUser = c.Int(),
                     })
-                .PrimaryKey(t => t.IdVent)
+                .PrimaryKey(t => t.BuyID)
                 .ForeignKey("dbo.Clients", t => t.Client_IdClient)
                 .ForeignKey("dbo.Users", t => t.User_IdUser)
                 .Index(t => t.Client_IdClient)
@@ -141,22 +136,18 @@
         
         public override void Down()
         {
-            DropForeignKey("dbo.BuyDetails", "Vent_IdVent", "dbo.Buys");
-            DropForeignKey("dbo.Buys", "User_IdUser", "dbo.Users");
-            DropForeignKey("dbo.Buys", "Client_IdClient", "dbo.Clients");
-            DropForeignKey("dbo.BuyDetails", "Product_IdProduct", "dbo.Products");
+            DropForeignKey("dbo.Buy", "User_IdUser", "dbo.Users");
+            DropForeignKey("dbo.Buy", "Client_IdClient", "dbo.Clients");
             DropForeignKey("dbo.Remboursements", "Client_IdClient", "dbo.Clients");
             DropForeignKey("dbo.Products", "Emplacer_IdEmplacement", "dbo.Emplacers");
             DropForeignKey("dbo.Products", "IdCategorie", "dbo.Categories");
-            DropIndex("dbo.Buys", new[] { "User_IdUser" });
-            DropIndex("dbo.Buys", new[] { "Client_IdClient" });
-            DropIndex("dbo.BuyDetails", new[] { "Vent_IdVent" });
-            DropIndex("dbo.BuyDetails", new[] { "Product_IdProduct" });
+            DropIndex("dbo.Buy", new[] { "User_IdUser" });
+            DropIndex("dbo.Buy", new[] { "Client_IdClient" });
             DropIndex("dbo.Remboursements", new[] { "Client_IdClient" });
             DropIndex("dbo.Products", new[] { "Emplacer_IdEmplacement" });
             DropIndex("dbo.Products", new[] { "IdCategorie" });
-            DropTable("dbo.Buys");
-            DropTable("dbo.BuyDetails");
+            DropTable("dbo.Buy");
+            DropTable("dbo.BuyDetail");
             DropTable("dbo.Users");
             DropTable("dbo.Settings");
             DropTable("dbo.Remboursements");

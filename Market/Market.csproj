@@ -109,7 +109,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Commands\ClientUpdateCommand.cs" />
     <Compile Include="Core\Domain\Categorie.cs" />
     <Compile Include="Core\Domain\Client.cs" />
     <Compile Include="Core\Domain\Emplacer.cs" />
@@ -122,24 +121,27 @@
     <Compile Include="Core\IUnitOfWork.cs" />
     <Compile Include="Core\Repositories\IProduct.cs" />
     <Compile Include="Core\Repositories\IRepository.cs" />
+    <Compile Include="Core\Repositories\ISetting.cs" />
     <Compile Include="Core\Repositories\IUser.cs" />
-    <Compile Include="Migrations\202008211915122_create_first.cs" />
-    <Compile Include="Migrations\202008211915122_create_first.designer.cs">
-      <DependentUpon>202008211915122_create_first.cs</DependentUpon>
+    <Compile Include="Migrations\202008262014507_first_release.cs" />
+    <Compile Include="Migrations\202008262014507_first_release.designer.cs">
+      <DependentUpon>202008262014507_first_release.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202008271717027_table_setting_edit.cs" />
+    <Compile Include="Migrations\202008271717027_table_setting_edit.designer.cs">
+      <DependentUpon>202008271717027_table_setting_edit.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Models\Categorie_Model.cs" />
-    <Compile Include="Models\Product_Model.cs" />
     <Compile Include="Persistence\MSContext.cs" />
     <Compile Include="Persistence\Repositories\ProductRepository.cs" />
     <Compile Include="Persistence\Repositories\Repository.cs" />
+    <Compile Include="Persistence\Repositories\SettingRepo.cs" />
     <Compile Include="Persistence\Repositories\UserRepository.cs" />
     <Compile Include="Persistence\UnitOfWork.cs" />
     <Compile Include="Properties\Annotations.cs" />
-    <Compile Include="ViewModels\ClientInfoViewModel.cs" />
-    <Compile Include="ViewModels\ClientViewModel.cs" />
-    <Compile Include="ViewModels\MainViewModel.cs" />
-    <Compile Include="ViewModels\ProductViewModel.cs" />
+    <Compile Include="Views\AboutApp.xaml.cs">
+      <DependentUpon>AboutApp.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\CurrencyTextBox.cs" />
     <Compile Include="Views\DXIGallery.xaml.cs">
       <DependentUpon>DXIGallery.xaml</DependentUpon>
@@ -148,6 +150,10 @@
     <Compile Include="Views\Window1.xaml.cs">
       <DependentUpon>Window1.xaml</DependentUpon>
     </Compile>
+    <Page Include="Views\AboutApp.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\DXIGallery.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -170,7 +176,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\ClientDTO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -184,14 +189,18 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <EmbeddedResource Include="Migrations\202008211915122_create_first.resx">
-      <DependentUpon>202008211915122_create_first.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202008262014507_first_release.resx">
+      <DependentUpon>202008262014507_first_release.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202008271717027_table_setting_edit.resx">
+      <DependentUpon>202008271717027_table_setting_edit.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Licenses.licx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <Resource Include="Res\font\hind_regular.ttf" />
     <Resource Include="Res\font\digital_mono.ttf" />
     <Resource Include="Res\font\digital_rg.ttf" />
     <Resource Include="Res\font\almarai_bold.ttf" />
@@ -235,7 +244,24 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Models\" />
     <Folder Include="Persistence\EntityConfigurations\" />
+    <Folder Include="ViewModels\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Res\png\plus.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Res\png\plus_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Res\png\delete_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Res\png\delete_2_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Res\png\bin.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

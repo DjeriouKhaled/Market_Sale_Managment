@@ -7,7 +7,7 @@ namespace Market.Core.Repositories
     public interface IRepository<TEntity> where TEntity : class
     {
 
-        // get from database
+     
         TEntity Get(int id);
         TEntity Get(int? id);
         int GetCount();

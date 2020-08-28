@@ -425,9 +425,9 @@
             <Setter Property="FontWeight" Value="Normal" />
         </Style>
         <Style x:Key="TextBlockStyle" TargetType="{x:Type TextBlock}">
-            <Setter Property="FontFamily" Value="/Market;component/#Almarai Bold" />
+            <Setter Property="FontFamily" Value="/Market;component/#hind_regular" />
             <Setter Property="FontSize" Value="16" />
-            <Setter Property="FontWeight" Value="DemiBold" />
+            <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="Foreground" Value="#BE000000" />
             <Setter Property="VerticalAlignment" Value="Top" />
         </Style>
@@ -441,20 +441,30 @@
         </dx:EntitySimpleDataSource>
         <!--#region cardHeaderTemplate-->
         <DataTemplate x:Key="CardHeaderTemplate">
-            <Grid  Background="White" />
+            <Grid Background="White" />
         </DataTemplate>
-        <dx:EntityCollectionViewSource x:Key="EntityCollectionViewSource" Culture="en-US" ContextType="{x:Type Persistence:MsContext}" CollectionViewType="{x:Type ListCollectionView}" Path="Categories">
+        <dx:EntityCollectionViewSource
+            x:Key="EntityCollectionViewSource"
+            CollectionViewType="{x:Type ListCollectionView}"
+            ContextType="{x:Type Persistence:MsContext}"
+            Culture="en-US"
+            Path="Categories">
             <dx:DesignDataManager.DesignData>
-                <dx:DesignDataSettings RowCount="5"/>
+                <dx:DesignDataSettings RowCount="5" />
             </dx:DesignDataManager.DesignData>
         </dx:EntityCollectionViewSource>
-
+        <dx:EntitySimpleDataSource
+            x:Key="EntitySimpleDataSource1"
+            ContextType="{x:Type Persistence:MsContext}"
+            Path="Categories">
+            <dx:DesignDataManager.DesignData>
+                <dx:DesignDataSettings RowCount="5" />
+            </dx:DesignDataManager.DesignData>
+        </dx:EntitySimpleDataSource>
         <!--#endregion-->
     </Window.Resources>
 
-    <Window.DataContext>
-        <views:MainWindowViewModel />
-    </Window.DataContext>
+
 
     <!--    Grid Prensibale     -->
 
@@ -471,13 +481,12 @@
             dxb:BarManager.ToolbarGlyphSize="Custom"
             FlowDirection="RightToLeft">
             <dxb:MainMenuControl Background="#F2F2F2" Caption="Main Menu">
-                <!-- file -->
-                <dxb:BarSubItem
-                    BarItemDisplayMode="ContentAndGlyph"
-                    Content="ملف"
-                    Glyph="{dx:DXImage Image=BOFileAttachment_16x16.png}"
+                <!-- file
+                 Glyph="{dx:DXImage Image=BOFileAttachment_16x16.png}"
                     Language="ar"
-                    LargeGlyph="{dx:DXImage Image=BO_FileAttachment_32x32.png}">
+                    LargeGlyph="{dx:DXImage Image=BO_FileAttachment_32x32.png}"
+                -->
+                <dxb:BarSubItem BarItemDisplayMode="ContentAndGlyph" Content="ملف">
                     <dxb:BarButtonItem
                         CategoryName="File"
                         Content="فتح"
@@ -496,13 +505,12 @@
                         Description="خروج من البرنامج"
                         KeyGesture="Ctrl+X" />
                 </dxb:BarSubItem>
-                <!-- السلع -->
-                <dxb:BarSubItem
-                    BarItemDisplayMode="ContentAndGlyph"
-                    Content="السلع"
-                    Glyph="pack://application:,,,/DevExpress.Images.v18.2;component/DevAV/Actions/Buy_16x16.png"
+                <!-- السلع  
+                Glyph="pack://application:,,,/DevExpress.Images.v18.2;component/DevAV/Actions/Buy_16x16.png"
                     Language="ar"
-                    LargeGlyph="pack://application:,,,/DevExpress.Images.v18.2;component/DevAV/Actions/Buy_32x32.png">
+                    LargeGlyph="pack://application:,,,/DevExpress.Images.v18.2;component/DevAV/Actions/Buy_32x32.png"
+                -->
+                <dxb:BarSubItem BarItemDisplayMode="ContentAndGlyph" Content="السلع">
                     <dxb:BarButtonItem
                         Content="إضافة"
                         Description="إضافة سلعة جديدة"
@@ -519,7 +527,7 @@
                     <dxb:BarButtonItem CategoryName="Sales" Content="تسديد" />
                 </dxb:BarSubItem>
                 <dxb:BarSubItem Content="مساعدة">
-                    <dxb:BarButtonItem Content="عن البرنامج" />
+                    <dxb:BarButtonItem Content="عن البرنامج" ItemClick="AboutAPP_OnItemClick" />
                 </dxb:BarSubItem>
             </dxb:MainMenuControl>
             <!--            <dxb:ToolBarControl-->
@@ -557,7 +565,7 @@
             <!--               -->
             <!--            </dxb:ToolBarControl>-->
             <dxb:ToolBarControl
-                Height="30"
+                Height="35"
                 HorizontalAlignment="Right"
                 AllowCollapse="False"
                 AllowCustomizationMenu="False"
@@ -567,10 +575,21 @@
                 AllowRemove="False"
                 AllowRename="False"
                 Focusable="False"
+                Padding="10"
                 ShowDragWidget="False"
                 UseWholeRow="True">
-                <dxb:BarButtonItem Alignment="Near" Content="Print" />
-                <dxb:BarButtonItem Alignment="Far" Content="Print" />
+                <dxb:BarButtonItem
+                    Alignment="Near"
+                    BarItemDisplayMode="ContentAndGlyph"
+                    Content="جديد"
+                    Glyph="pack://application:,,,/Market;component/Res/png/plus_16.png"
+                    ItemClick="{DXEvent New_Buy_OnItemClick()}" />
+                <dxb:BarButtonItem
+                    Alignment="Near"
+                    BarItemDisplayMode="ContentAndGlyph"
+                    Content="إلغاء"
+                    Glyph="pack://application:,,,/Market;component/Res/png/bin.png"
+                    ItemClick="{DXEvent Delete_Buy_OnItemClick()}" />
             </dxb:ToolBarControl>
         </dxb:BarContainerControl>
         <!-- #endregion-->
@@ -585,9 +604,10 @@
                 ItemHeight="*"
                 LayoutGroupInterval="0"
                 LayoutItemInterval="0"
-                Orientation="Vertical">
+                Orientation="Vertical"
+                RenderTransformOrigin="0.501,0.55">
                 <!--                3 panel : Good|Center|Calculateur   -->
-                <dxdo:LayoutGroup ItemHeight="0.97*" Orientation="Horizontal">
+                <dxdo:LayoutGroup ItemHeight="1.1*" Orientation="Horizontal">
                     <!--                    قائمة  المشتريات-->
                     <dxdo:LayoutPanel
                         x:Name="ListOfGood"
@@ -612,35 +632,39 @@
                             AllowRecursiveSelectionForCollapsedGroups="False"
                             AutoGenerateColumns="None"
                             EnableSmartColumnsGeneration="True"
-                            FilterString="[Visits] &gt;= 5 and [City] = 'Los Angeles'"
                             FlowDirection="RightToLeft"
-                            ItemsSource="{Binding Customers}"
+                            ItemsSource="{Binding BuyDetails}"
                             SelectionMode="Row"
                             ShowBorder="True">
                             <dxg:GridControl.View>
                                 <dxg:TableView
+                                    AllowBestFit="True"
                                     AllowEditing="False"
                                     AllowGrouping="True"
+                                    AutoWidth="True"
                                     ShowGroupPanel="False" />
                             </dxg:GridControl.View>
                             <dxg:GridColumn
-                                FieldName="Name"
+                                FieldName="Id"
+                                Header="رقم"
+                                IsSmart="True" />
+                            <dxg:GridColumn
+                                FieldName="NameProcuct"
                                 Header="الاسم"
                                 IsSmart="True" />
                             <dxg:GridColumn
-                                FieldName="City"
+                                FieldName="PrixUnit"
                                 FrameworkElement.FlowDirection="LeftToRight"
-                                Header="NumberC"
+                                Header="سعر الوحدة"
                                 IsSmart="True" />
-                            <dxg:GridColumn FieldName="Visits">
+                            <dxg:GridColumn FieldName="Qte">
                                 <dxg:GridColumn.HeaderTemplate>
                                     <DataTemplate>
                                         <TextBlock TextTrimming="CharacterEllipsis">
-                                            <Run Text="product" />
                                             <Run Text=" " />
                                             <Run Text=" " />
                                             <Run Text=" " />
-                                            <Run FontWeight="Bold" Text="Qt" />
+                                            <Run FontWeight="Bold" Text="الكمية" />
                                         </TextBlock>
                                     </DataTemplate>
                                 </dxg:GridColumn.HeaderTemplate>
@@ -648,11 +672,10 @@
                                     <dxe:ComboBoxEditSettings HorizontalContentAlignment="Left" FlowDirection="RightToLeft" />
                                 </dxg:GridColumn.EditSettings>
                             </dxg:GridColumn>
-                            <dxg:GridColumn FieldName="Birthday" IsSmart="True">
-                                <dxg:GridColumn.EditSettings>
-                                    <dxe:DateEditSettings Mask="m" MaskUseAsDisplayFormat="True" />
-                                </dxg:GridColumn.EditSettings>
-                            </dxg:GridColumn>
+                            <dxg:GridColumn
+                                FieldName="PrixTotal"
+                                Header="السعر النهائي"
+                                IsSmart="True" />
                         </dxg:GridControl>
                     </dxdo:LayoutPanel>
                     <!-- Center panel  -->
@@ -675,7 +698,7 @@
                         ShowBorder="False"
                         ShowCaption="False"
                         ShowControlBox="False">
-                        <Grid VerticalAlignment="Center">
+                        <Grid VerticalAlignment="Top">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
@@ -687,6 +710,7 @@
                                 </Grid.RowDefinitions>
                                 <Border
                                     Grid.Row="0"
+                                    Margin="0 5 0 0"
                                     Background="White"
                                     CornerRadius="10">
                                     <Grid Height="auto" FlowDirection="RightToLeft">
@@ -710,13 +734,13 @@
                                                 <ColumnDefinition Width="Auto" />
                                                 <ColumnDefinition Width="Auto" />
                                             </Grid.ColumnDefinitions>
-                                            <Label
+                                            <TextBlock
                                                 Grid.Column="0"
-                                                Content="00"
                                                 FlowDirection="RightToLeft"
                                                 FontSize="30"
                                                 FontWeight="DemiBold"
-                                                Foreground="#BE000000" />
+                                                Foreground="#BE000000"
+                                                Text="{Binding Total.Text}" />
                                             <Label
                                                 Grid.Column="1"
                                                 Margin="10 0"
@@ -757,17 +781,16 @@
                                             Style="{StaticResource TextBlockStyle}"
                                             Text="إسم المنتج :" />
                                         <TextBlock
-                                            Name="NameOfProductTextBlock"
                                             Grid.Row="0"
                                             Grid.Column="1"
-                                            Margin="10 0 10 10"
-                                            FontFamily="Verdana"
-                                            FontWeight="Light"
-                                            Foreground="#313131"
                                             MaxWidth="160"
+                                            Margin="10 0 10 10"
+                                            FontFamily="/Market;component/#hind_regular"
+                                            FontSize="20"
+                                            Foreground="#313131"
+                                            Name="NameOfProductTextBlock"
                                             Style="{StaticResource TextBlockStyle}"
-                                            Text="{Binding Name_Product.Text}" 
-                                            />
+                                            Text="{Binding Name_Product.Text}" />
                                         <TextBlock
                                             Grid.Row="1"
                                             Grid.Column="0"
@@ -775,19 +798,20 @@
                                             Style="{StaticResource TextBlockStyle}"
                                             Text="الرقم التسلسلي :" />
                                         <dxe:TextEdit
-                                            Name="CodeBar"
                                             Grid.Row="1"
                                             Grid.Column="1"
-                                            Width="120"
+                                            Width="170"
                                             Margin="10 0 10 10"
                                             BorderBrush="LightGray"
-                                            FlowDirection="RightToLeft"
-                                            FontFamily="Verdana"
-                                            FontSize="16"
                                             EditValue="{Binding CodeBar.EditValue, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"
                                             EditValueChanged="{DXEvent SearchProductWithCodeBar()}"
-                                            Foreground="Black"
-                                            Style="{StaticResource TextEditStyle}"/>
+                                            FlowDirection="RightToLeft"
+                                            FontFamily="/Market;component/#hind_regular"
+                                            FontSize="20"
+                                            Foreground="#313131"
+                                            Name="CodeBar"
+                                            Style="{StaticResource TextEditStyle}"
+                                            Text ="{Binding CodeBar.Text}" />
                                         <TextBlock
                                             Grid.Row="2"
                                             Grid.Column="0"
@@ -797,10 +821,11 @@
                                             Grid.Row="2"
                                             Grid.Column="1"
                                             Margin="10 0 10 10"
-                                            FontFamily="Verdana"
+                                            FontFamily="/Market;component/#hind_regular"
+                                            FontSize="20"
                                             Foreground="#313131"
                                             Style="{StaticResource TextBlockStyle}"
-                                           Text="{Binding prix_unit_Product.Text}" />
+                                            Text="{Binding prix_unit_Product.Text}" />
                                         <TextBlock
                                             Grid.Row="3"
                                             Grid.Column="0"
@@ -811,15 +836,17 @@
                                             x:Name="Qt_TextEdit"
                                             Grid.Row="3"
                                             Grid.Column="1"
-                                            Width="120"
+                                            Width="160"
                                             Margin="10 0 10 10"
                                             BorderBrush="LightGray"
+                                            EditValue="{Binding Qte_Product.EditValue, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"
+                                            EditValueChanged="{DXEvent 'Qte_ProductChanged()'}"
                                             FlowDirection="RightToLeft"
-                                            FontFamily="Verdana"
+                                            FontFamily="/Market;component/#hind_regular"
                                             FontSize="20"
                                             Foreground="#313131"
                                             Style="{StaticResource TextEditStyle}"
-                                            Text="4" />
+                                            Text="{Binding Qte_Product.Text}" />
                                         <TextBlock
                                             Grid.Row="4"
                                             Grid.Column="0"
@@ -829,18 +856,19 @@
                                             Grid.Row="4"
                                             Grid.Column="1"
                                             Margin="10 0 10 0"
-                                            FontFamily="Verdana"
+                                            FontFamily="/Market;component/#hind_regular"
+                                            FontSize="20"
                                             Foreground="#313131"
                                             Style="{StaticResource TextBlockStyle}"
-                                            Text="120.00 da" />
+                                            Text="{DXBinding prix_total_Product.Text}" />
                                     </Grid>
                                     <Image
-                                        Name="ImagePrincipal"
                                         Grid.Column="1"
                                         Width="200"
                                         Height="200"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Top"
+                                        Name="ImagePrincipal"
                                         Source="{Binding Img.Source}"
                                         Stretch="Uniform" />
                                 </Grid>
@@ -867,17 +895,23 @@
                                         <!-- for content   -->
                                     </Grid.RowDefinitions>
                                     <dxe:TextEdit
-                                        x:Name="tbPositionCursor"
                                         Grid.Row="0"
-                                        Margin="0 2 0 0"
+                                        Margin="0 0 0 0"
                                         BorderBrush="LightGray"
-                                        EditValueChanged="TbPositionCursor_OnEditValueChanged"
+                                       
+                                        EditValue="{Binding tbPositionCursor.EditValue, 
+                                        UpdateSourceTrigger=PropertyChanged ,Mode=TwoWay}"
+                                        EditValueChanged="{DXEvent TbPositionCursor_OnEditValueChanged()}"
                                         FlowDirection="RightToLeft"
                                         FontFamily="Verdana"
                                         FontSize="20"
                                         Foreground="Black"
+                                        GotKeyboardFocus="{DXEvent tbPositionCursor_GotKeyboardFocus()}"
+                                        LostKeyboardFocus="{DXEvent tbPositionCursor_LostKeyboardFocus()}"
+                                        Name="tbPositionCursor"
                                         PreviewTextInput="bobo"
-                                        Style="{StaticResource TextEditStyle}" />
+                                        Style="{StaticResource TextEditStyle}"
+                                        Text="{Binding tbPositionCursor.Text}" />
                                     <Grid
                                         Grid.Row="1"
                                         Margin=" 0 5 0 0"
@@ -970,7 +1004,7 @@
                                         <Button
                                             Grid.Row="3"
                                             Grid.Column="2"
-                                            Click="Btn_validate_OnClick"
+                                            Click="{DXEvent Btn_validate_OnClick()}"
                                             Style="{StaticResource CalculatorValidateButton}">
                                             <Path
                                                 Width="20"
@@ -1034,15 +1068,14 @@
                     AllowSelection="False"
                     CaptionHorizontalAlignment="Left"
                     FlowDirection="RightToLeft"
-                    ItemHeight="1.03*"
+                    ItemHeight="0.9*"
                     ShowBorder="True"
                     ShowCaption="False">
-
                     <Grid>
-                        <Grid >
+                        <Grid>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
                             <Grid Grid.Row="0">
                                 <Grid.ColumnDefinitions>
@@ -1051,106 +1084,105 @@
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
                                 <TextBlock
-                                Grid.Column="0"
-                                VerticalAlignment="Center"
-                                FontSize="16"
-                                FontWeight="ExtraBlack"
-                                Text="المنتجات" />
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    FontSize="16"
+                                    FontWeight="ExtraBlack"
+                                    Text="المنتجات" />
                                 <!--                                            <Button-->
                                 <!--												Width="50"-->
                                 <!--												Background="#1AEBC9"-->
                                 <!--												Foreground="White"-->
                                 <!--                                                Content="345"/>-->
                                 <!--                                            <dxe:TextEdit Width="150" FontSize="16" EditValue="search"/>-->
-                                <TextBlock
-                                Grid.Column="1"
-                                Margin="50 0 0 0"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Center"
-                                FontSize="16"
-                                    FontWeight="Normal"
-                                Text="الصنف " />
-                                <dxe:ComboBoxEdit
-                                    Grid.Column="2"
-                                    MinWidth="120"
-                                    DisplayMember="NameCategorie"
-                                    EditValue="All"
-                                    Foreground="#6C6C6C"
-                                    EditValueChanged="{DXEvent 'ChangeSelectedCategorie()'}"
-                                    FontWeight="Normal"
-                                    FontSize="13.333"
-                                    ImmediatePopup="True"
-                                    IsTextEditable="False"
-                                    SelectedIndex="1"
-                                    ItemsSource="{Binding CmboCategories}"
-                                    ValueMember="IdCategorie" IsSynchronizedWithCurrentItem="True">
-                                    <dxe:ComboBoxEdit.StyleSettings>
-                                        <dxe:ComboBoxStyleSettings />
-                                    </dxe:ComboBoxEdit.StyleSettings>
-                                </dxe:ComboBoxEdit>
+                                <!--                                <TextBlock-->
+                                <!--                                Grid.Column="1"-->
+                                <!--                                Margin="50 0 0 0"-->
+                                <!--                                HorizontalAlignment="Right"-->
+                                <!--                                VerticalAlignment="Center"-->
+                                <!--                                FontSize="16"-->
+                                <!--                                    FontWeight="Normal"-->
+                                <!--                                Text="الصنف " />-->
+                                <!--                                <dxe:ComboBoxEdit-->
+                                <!--                                    Name="Categarie_ComboBoxEdit"-->
+                                <!--                                    Grid.Column="2"-->
+                                <!--                                    ItemsSource="{Binding CmboCategories , UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"-->
+                                <!--                                    EditValueChanged="{DXEvent 'ChangeSelectedCategorie()'}"-->
+                                <!--                                    MinWidth="120"-->
+                                <!--                                    DisplayMember="NameCategorie"-->
+                                <!--                                    ValueMember="IdCategorie" -->
+                                <!--                                    Foreground="#6C6C6C"-->
+                                <!--                                    FontWeight="Normal"-->
+                                <!--                                    FontSize="14"-->
+                                <!--                                    IsTextEditable="False"-->
+                                <!--                                    SelectedItem="1" SelectedIndex="1" >-->
+                                <!--                                    <dxe:ComboBoxEdit.StyleSettings>-->
+                                <!--                                        <dxe:ComboBoxStyleSettings  />-->
+                                <!--                                    </dxe:ComboBoxEdit.StyleSettings>-->
+                                <!--                                </dxe:ComboBoxEdit>-->
                             </Grid>
-
                             <dxg:GridControl
-                            Grid.Row="1"
-                            FlowDirection="RightToLeft"
-                            ItemsSource= "{Binding mProducts}"
-                            SelectionMode="None"
-                            ShowBorder="False">
+                                Grid.Row="1"
+                                FlowDirection="RightToLeft"
+                                ItemsSource= "{Binding mProducts}"
+                                SelectionMode="None"
+                                ShowBorder="False">
                                 <dxg:GridControl.View>
                                     <dxg:CardView
-                                    AllowCardResizing="False"
-                                    AllowEditing="False"
-                                    AllowMoveColumnToDropArea="False"
-                                    AllowPaging="True"
-                                    CardAlignment="Center"
-                                    CardHeaderTemplate="{StaticResource CardHeaderTemplate}"
-                                    CardLayout="Rows"
-                                    ColumnFilterPopupMode="ExcelSmart"
-                                    EditorButtonShowMode="ShowAlways"
-                                    FixedSize="210"
-                                    Focusable="True"
-                                    MinFixedSize="150"
-                                        
-                                    
-                                    Name="ProductCardView"
-                                    NavigationStyle="{Binding Path=SelectedItem.Tag, ElementName=templateSelectorListBox}"
-                                    PageSize="10"
-                                    MouseDoubleClick="{DXEvent 'testMethod($dx:EventArgsToDataRowConverter.GetDataRow(@args))'}"
-                                    SeparatorThickness="0"
-                                  
+                                        AllowCardResizing="False"
+                                        AllowEditing="False"
+                                        AllowMoveColumnToDropArea="False"
+                                        AllowPaging="True"
+                                        CardAlignment="Center"
+                                        CardHeaderTemplate="{StaticResource CardHeaderTemplate}"
+                                        CardLayout="Rows"
+                                        ColumnFilterPopupMode="ExcelSmart"
+                                        EditorButtonShowMode="ShowAlways"
+                                        FixedSize="210"
+                                        Focusable="True"
+                                        MinFixedSize="150"
+                                        MouseDoubleClick="{DXEvent 'ProductSelected($dx:EventArgsToDataRowConverter.GetDataRow(@args))'}"
+                                        Name="ProductCardView"
+                                        NavigationStyle="{Binding Path=SelectedItem.Tag, ElementName=templateSelectorListBox}"
+                                        PageSize="6"
+                                        SeparatorThickness="0"
                                         ShowCardExpandButton="False"
-                                    ShowColumnHeaders="False"
-                                    
-                                    ShowFocusedRectangle="True"
-                                    ShowGroupedColumns="True"
-                                    ShowGroupPanel="False"
-                                    ShowSearchPanelMode="Never"
-                                    ShowSelectionRectangle="True" />
+                                        ShowColumnHeaders="False"
+                                        ShowFocusedRectangle="True"
+                                        ShowGroupedColumns="True"
+                                        ShowGroupPanel="False"
+                                        ShowSearchPanelMode="Never"
+                                        ShowSelectionRectangle="True" />
                                 </dxg:GridControl.View>
                                 <!--#region Columns-->
                                 <!--Image-->
                                 <dxg:GridColumn
-                                AllowFocus="False"
-                                FieldName="Image"
-                                ReadOnly="True"
-                                Header="صورة">
+                                    AllowFocus="False"
+                                    FieldName="Image"
+                                    Header="صورة"
+                                    ReadOnly="True">
                                     <dxg:GridColumn.EditSettings>
-                                        <dxe:ImageEditSettings MaxWidth="115"/>
+                                        <dxe:ImageEditSettings MaxWidth="115" />
                                     </dxg:GridColumn.EditSettings>
                                 </dxg:GridColumn>
                                 <dxg:GridColumn
-                                ReadOnly="True"
-                                AllowBestFit="false"
-                                AllowFocus="False"
-                                ColumnChooserHeaderCaption=" "
-                                FieldName="NameProduct"
-                                Header="اسم" />
-                                <dxg:GridColumn FieldName="Price_unit" Header="سعر" AllowFocus="False" ReadOnly="True" HorizontalHeaderContentAlignment="Center">
+                                    AllowBestFit="false"
+                                    AllowFocus="False"
+                                    ColumnChooserHeaderCaption=" "
+                                    FieldName="NameProduct"
+                                    Header="اسم"
+                                    ReadOnly="True" />
+                                <dxg:GridColumn
+                                    AllowFocus="False"
+                                    FieldName="Price_unit"
+                                    Header="سعر"
+                                    HorizontalHeaderContentAlignment="Center"
+                                    ReadOnly="True">
                                     <dxg:GridColumn.EditSettings>
                                         <dxe:TextEditSettings
-                                        HorizontalContentAlignment="Center"
-                                        DisplayFormat="0 دج"
-                                        MaskType="Numeric" />
+                                            HorizontalContentAlignment="Center"
+                                            DisplayFormat="0 دج"
+                                            MaskType="Numeric" />
                                     </dxg:GridColumn.EditSettings>
                                 </dxg:GridColumn>
                             </dxg:GridControl>

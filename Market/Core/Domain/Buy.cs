@@ -4,22 +4,20 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Market.Core.Domain
 {
+    [Table("Buy")]
     public class Buy
     {
-        [Key]
-        public int IdVent { get; set; }
+        [Key, Column("BuyID")]
+        public int IdBuy { get; set; }
 
         public int Montant { get; set; }
 
-        public DateTime DateVent { get; set; }
+        public DateTime DateBuy { get; set; }
 
      
         public User User { get; set; }
 
        
         public Client Client { get; set; }
-
-
-
     }
 }

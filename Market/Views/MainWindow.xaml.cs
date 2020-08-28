@@ -3,7 +3,6 @@ using DevExpress.Xpf.Bars;
 using DevExpress.Xpf.Editors;
 using Market.Core.Domain;
 using Market.Persistence;
-using Market.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -16,7 +15,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Drawing;
+using System.Windows.Interop;
 using System.Windows.Media.Imaging;
+using DevExpress.Mvvm.Native;
 
 namespace Market.Views
 {
@@ -25,21 +26,8 @@ namespace Market.Views
         public MainWindow()
         {
             InitializeComponent();
-          
-            using (var U1 =new UnitOfWork(new MsContext()))
-            {
-                if (U1.Product.GetCount()!=0)
-                {
-                    foreach (Core.Domain.Product user in U1.Product.GetAll())
-                    {
-                        U1.Categorie.Get(-1);
 
-                        Console.WriteLine(user.NameProduct + " " + user.IdProduct + " " + U1.Categorie.Get(user.IdCategorie).NameCategorie + " " + user.Prix);
-                    }
-                }
-            }
-
-           
+            DataContext = new MainWindowViewModel();
         }
 
         private static bool IsTextAllowed(string text)
@@ -52,16 +40,10 @@ namespace Market.Views
         private void bobo(object sender, TextCompositionEventArgs e)
         {
             e.Handled = !IsTextAllowed(e.Text);
+            
         }
 
-        private void TbPositionCursor_OnEditValueChanged(object sender, EditValueChangedEventArgs e)
-        {
-            tbPositionCursor.Text = tbPositionCursor.Text.Trim();
-            tbPositionCursor.Select(tbPositionCursor.Text.Length , 0);
-            
-         //   GridLength g =new GridLength(BLayoutPanel.ItemHeight.Value+0.11,GridUnitType.Star);
-         //   BLayoutPanel.ItemHeight = g;
-        }
+  
 
         private void Btn_false_OnClick(object sender, RoutedEventArgs e)
         {
@@ -73,28 +55,24 @@ namespace Market.Views
                     Qt_TextEdit.Text = Qt_TextEdit.Text.Remove(Qt_TextEdit.Text.Length - 1);
                 }
             }
+            else if (CodeBar.IsKeyboardFocusWithin)
+            {
+                if (CodeBar.Text.Length != 0)
+                {
+                    CodeBar.Text = CodeBar.Text.Remove(CodeBar.Text.Length - 1);
+                }
+            }
             else
             {
                 if (tbPositionCursor.Text.Length != 0)
                 {
                     tbPositionCursor.Text = tbPositionCursor.Text.Remove(tbPositionCursor.Text.Length - 1);
                 }
-               
-            }
-        }
-        private void Btn_validate_OnClick(object sender, RoutedEventArgs e)
-        {
-            if (Qt_TextEdit.IsKeyboardFocusWithin)
-            {
-               
-            }
-            else
-            {     
-                    tbPositionCursor.Text ="";
-                
 
             }
         }
+       
+
 
         private void Btn_0_OnClick(object sender, RoutedEventArgs e) { AddNumberToEditText("0"); }
         private void Btn_1_OnClick(object sender, RoutedEventArgs e) { AddNumberToEditText("1"); }
@@ -117,6 +95,13 @@ namespace Market.Views
                 Qt_TextEdit.Text = Qt_TextEdit.Text.Trim();
                 Qt_TextEdit.Select(Qt_TextEdit.Text.Length, 0);
             }
+            else if(CodeBar.IsKeyboardFocusWithin)
+            {
+                CodeBar.Text = CodeBar.Text + s;
+                // MakeIndexInLast
+                CodeBar.Text = CodeBar.Text.Trim();
+                CodeBar.Select(CodeBar.Text.Length, 0);
+            }
             else
             {
                 tbPositionCursor.Text = tbPositionCursor.Text + s;
@@ -125,22 +110,44 @@ namespace Market.Views
             }
         }
 
-        public  void ImagePinc( )
+
+        private void AboutAPP_OnItemClick(object sender, ItemClickEventArgs e)
         {
-           // ImagePrincipal.Source=
+            var cApp = ((App)Application.Current);
+            cApp.MainWindow = new AboutApp();
+            cApp.MainWindow.ShowDialog();
         }
-
-        private void BarItem_RefreshProducts(object sender, ItemClickEventArgs e)
-        {
-            
-            BorderCalculator.Visibility = BorderCalculator.Visibility.Equals(Visibility.Visible) ? Visibility.Hidden : Visibility.Visible;
-        }
-
-
-
     }
 
     #region Models
+
+    public class BuyDetail
+    {
+        public int Id { get; set; }
+        
+        public int IdBuy_ForeignKey { get; set; }
+
+        public int IdProduct_ForeignKey { get; set; }
+
+
+        public string NameProcuct { get; set; }
+
+        public string Qte { get; set; }
+
+        public string PrixUnit { get; set; }
+
+        public string PrixTotal { get; set; }
+    }
+
+
+    public class Buy
+    {
+        public int IdBuy { get; set; }
+
+        public int Montant { get; set; }
+
+        public DateTime DateVent { get; set; }
+    }
 
     public class CmboCategorie : INotifyPropertyChanged
     {
@@ -196,35 +203,29 @@ namespace Market.Views
 
     public class MainWindowViewModel : BindableBase
     {
-
-        public ClientViewModel ClientVM;
-        // solo
+       
+        // 
+        public int IdProductCurrentSelection;
+        public TextBlock Total { get; set; } = new TextBlock();
+        public TextEdit tbPositionCursor { get; set; } = new TextEdit();
         public System.Windows.Controls.Image Img { get; set; }=new System.Windows.Controls.Image();
         public  TextBlock Name_Product { get; set; }=new TextBlock();
         public  TextEdit CodeBar { get; set; }=new TextEdit();
 
         public TextBlock prix_unit_Product { get; set; } = new TextBlock();
+        public TextEdit Qte_Product { get; set; } = new TextEdit();
+        public TextBlock prix_total_Product { get; set; } = new TextBlock();
 
+    
         // Collections
-        public ObservableCollection<Product> mProducts { get; private set; } 
+        public ObservableCollection<Product> mProducts { get; set; } 
         
-        public ObservableCollection<CmboCategorie> CmboCategories { get; private set; }
+        public ObservableCollection<CmboCategorie> CmboCategories { get; set; }
+
+        public ObservableCollection<BuyDetail> BuyDetails { get; set; }
         
-        //  fake data
-        public List<Customer> Customers { get; private set; }
-        public List<string> Cities { get; private set; }
+    
 
-
-
-        public BitmapImage ImageFromBuffer(byte[] bytes)
-        {
-            MemoryStream stream = new MemoryStream(bytes);
-            BitmapImage image = new BitmapImage();
-            image.BeginInit();
-            image.StreamSource = stream;
-            image.EndInit();
-            return image;
-        }
         /// <summary>
         ///  constracteur for ViewModel principal
         /// </summary>
@@ -232,53 +233,14 @@ namespace Market.Views
         {
             CmboCategories = new ObservableCollection<CmboCategorie>();
             mProducts = new ObservableCollection<Product>();
-            // ClientVM = new ClientViewModel(this);
-
-            #region Costomer List fake data
-            var people = new List<Customer>
-            {
-                new Customer()
-                { Name = "Gregory S. Price", City = "Hong Kong", Visits = 4, Birthday = new DateTime(1980, 1, 1) },
-                new Customer()
-                { Name = "Irma R. Marshall", City = "Madrid", Visits = 2, Birthday = new DateTime(1966, 4, 15) },
-                new Customer()
-                { Name = "John C. Powell", City = "Los Angeles", Visits = 6, Birthday = new DateTime(1982, 3, 11) },
-                new Customer()
-                { Name = "Christian P. Laclair", City = "London", Visits = 11, Birthday = new DateTime(1977, 12, 5) },
-                new Customer()
-                { Name = "Karen J. Kelly", City = "Hong Kong", Visits = 8, Birthday = new DateTime(1956, 9, 5) },
-                new Customer()
-                { Name = "Brian C. Cowling", City = "Los Angeles", Visits = 5, Birthday = new DateTime(1990, 2, 27) },
-                new Customer()
-                { Name = "Thomas C. Dawson", City = "Madrid", Visits = 21, Birthday = new DateTime(1965, 5, 5) },
-                new Customer()
-                { Name = "Angel M. Wilson", City = "Los Angeles", Visits = 8, Birthday = new DateTime(1987, 11, 9) },
-                new Customer()
-                { Name = "Winston C. Smith", City = "London", Visits = 1, Birthday = new DateTime(1949, 6, 18) },
-                new Customer()
-                { Name = "Harold S. Brandes", City = "Bangkok", Visits = 3, Birthday = new DateTime(1989, 1, 8) },
-                new Customer()
-                { Name = "Michael S. Blevins", City = "Hong Kong", Visits = 4, Birthday = new DateTime(1972, 9, 14) },
-                new Customer()
-                { Name = "Jan K. Sisk", City = "Bangkok", Visits = 6, Birthday = new DateTime(1989, 5, 7) },
-                new Customer()
-                { Name = "Sidney L. Holder", City = "London", Visits = 19, Birthday = new DateTime(1971, 10, 3) }
-            };
-            Customers = people;
-
-            var cities = from c in people select c.City;
-            Cities = cities.Distinct().ToList();
-            #endregion
-
-            
+            BuyDetails = new ObservableCollection<BuyDetail>();
+            Total.Text = "0";
 
             using (var unitOfWork = new UnitOfWork(new MsContext()))
             {
-                // TODO : 
-                var products = unitOfWork.Product.GetAll();
-                if (products!=null)
-                {
-                    foreach (var product in products)
+                // TODO :
+                 
+                    foreach (var product in unitOfWork.Product.GetAll())
                     {
                         mProducts.Add(
                             new Product() {
@@ -289,25 +251,17 @@ namespace Market.Views
                                   Image = ImageFromBuffer(product.Img),
                                   Price_unit = product.Prix });
                     }
-                    
-                }
-
-               
-
-                var categories = unitOfWork.Categorie.GetAll();
-                CmboCategories.Add(new CmboCategorie() { Id = -1, NameCategorie = "All" });
-             
-                if (categories!=null)
-                {
-                    foreach (Categorie category in categories)
+                   
+                    foreach (var category in unitOfWork.Categorie.GetAll())
                     {
-                        CmboCategories.Add(new CmboCategorie() {
-                                                Id = category.IdCategorie,
-                                                NameCategorie = category.NameCategorie});
-                      
+                        CmboCategories.Add(new CmboCategorie()
+                        {
+                            Id = category.IdCategorie,
+                            NameCategorie = category.NameCategorie
+                        });
+
                     }
-                }
-              
+                
             }
 
 
@@ -322,8 +276,10 @@ namespace Market.Views
             if (CodeBar.EditValue == null)
             {
                 Img.Source = new BitmapImage();
-                Name_Product.Text = "";
-
+                Name_Product.Text = string.Empty;
+                prix_unit_Product.Text = string.Empty;
+                Qte_Product.Text = string.Empty;
+                prix_total_Product.Text = string.Empty;
                 return;
             }
             string codebar = CodeBar.EditValue.ToString();
@@ -341,18 +297,21 @@ namespace Market.Views
                                 if (codebar.Equals(product.BarCode))
                                 {
                                     Name_Product.Text = product.NameProduct;
-                                    BitmapImage image1 = ImageFromBuffer(product.Img);
-
-                                    Img.Source = image1;
-
+                                    Img.Source = ImageFromBuffer(product.Img);
+                                    prix_unit_Product.Text = product.Prix.ToString();
+                                    Qte_Product.Text = 1 + "";
+                                    prix_total_Product.Text = 1 * Convert.ToInt32(prix_unit_Product.Text) + "";
                                     break;
                                 }
                                 else
                                 {
-                                    BitmapImage image1 = new BitmapImage();
-                                    Name_Product.Text = "";
-                                    Img.Source = image1;
+                                    Img.Source = new BitmapImage();
+                                    Name_Product.Text = string.Empty;
+                                    prix_unit_Product.Text = string.Empty;
+                                    Qte_Product.Text = string.Empty;
+                                    prix_total_Product.Text = string.Empty;
                                 }
+                                   
                             }
 
                         }
@@ -362,9 +321,11 @@ namespace Market.Views
             }
             else
             {
-                BitmapImage image1 = new BitmapImage();
-                Name_Product.Text = "";
-                Img.Source = image1;
+                Img.Source = new BitmapImage();
+                Name_Product.Text = string.Empty;
+                prix_unit_Product.Text = string.Empty;
+                Qte_Product.Text = string.Empty;
+                prix_total_Product.Text = string.Empty;
 
             }
 
@@ -382,15 +343,186 @@ namespace Market.Views
             // MessageBox.Show("Detail info"+mProducts.Count);
         }
 
+        public int id_buy_detail = 1;
+        public void Btn_validate_OnClick()
+        {
+            
+                if (tbPositionCursor.Text!="")
+                {
+                    BuyDetails.Add(new BuyDetail()
+                    {
+                        Id = id_buy_detail,
+                        PrixTotal = tbPositionCursor.Text,
+                    });
+                    if (Total.Text != null)
+                    {
+                        Total.Text = Convert.ToInt32(Total.Text) + Convert.ToInt32(tbPositionCursor.Text) + "";
+                    }
+                    tbPositionCursor.Text = "";
+                    id_buy_detail++;
+                }
 
+                else
+                {
+                    if (Name_Product.Text != "")
+                    {
+                        BuyDetails.Add(new BuyDetail()
+                        {
+                            Id = id_buy_detail,
+                            NameProcuct = Name_Product.Text,
+                            PrixTotal = prix_total_Product.Text,
+                            PrixUnit = prix_unit_Product.Text,
+                            Qte = Qte_Product.Text,
+                            IdProduct_ForeignKey = IdProductCurrentSelection,
 
-        public void testMethod(Product p)
+                        });
+                        if (Total.Text != null)
+                        {
+                            Total.Text = Convert.ToInt32(Total.Text) + Convert.ToInt32(prix_total_Product.Text) + "";
+                        }
+                        ClearProductSelected();
+                        id_buy_detail++;
+                    }
+                }
+                            
+         
+            
+        
+               
+            
+           
+
+        }
+
+      
+
+        public void ProductSelected(Product p)
         {
             Img.Source = p.Image;
             Name_Product.Text = p.NameProduct;
             prix_unit_Product.Text = p.Price_unit.ToString();
+            CodeBar.Text = p.CodeBar;
+            Qte_Product.Text = 1+"";
+            prix_total_Product.Text = 1 * Convert.ToInt32(prix_unit_Product.Text) + "";
+            IdProductCurrentSelection = p.IdProduct;
             // MessageBox.Show(p.IdProduct.ToString());
+        }
+
+
+        public void New_Buy_OnItemClick()
+        {
+            int buyId;
+           
+            using (var U = new UnitOfWork(new MsContext()))
+            {
+                Core.Domain.Buy buy2 = new Core.Domain.Buy()
+                {
+                    DateBuy = DateTime.Now,
+                    Montant = Convert.ToInt32(Total.Text),
+
+                };
+                U.BuyRepository.Add(buy2);
+                U.Complete();
+
+                buyId = buy2.IdBuy;
+
+                foreach (var buyDetail in BuyDetails)
+                {
+                    var buy_detail = new Core.Domain.BuyDetail()
+                    {
+                        IdBuyDetail = buyDetail.Id,
+                        PrixUnit = Convert.ToInt32(buyDetail.PrixUnit),
+                        PrixTotal = Convert.ToInt32(buyDetail.PrixTotal),
+                        Qte = Convert.ToInt32(buyDetail.Qte),
+                        IdBuyForeignKey = buyId,
+                        IdProductForeignKey = buyDetail.IdProduct_ForeignKey,
+
+                    };
+                    U.BuyDetailRepository.Add(buy_detail);
+                }
+                
+                U.Complete();
+            }
+   
+        
+            ClearProductSelected();
+            Total.Text = "0";
+            tbPositionCursor.Text = "";
+            BuyDetails.Clear();
+        }
+        public void Delete_Buy_OnItemClick()
+        {
+            id_buy_detail = 1;
+            ClearProductSelected();
+            Total.Text = "0";
+            tbPositionCursor.Text = "";
+            BuyDetails.Clear();
+        }
+
+
+
+
+        // help methods ClearProductSeected
+        public void ClearProductSelected()
+        {
+            IdProductCurrentSelection = 0;
+            Img.Source = new BitmapImage();
+            Name_Product.Text = string.Empty;
+            prix_unit_Product.Text = string.Empty;
+            CodeBar.Text = string.Empty;
+            Qte_Product.Text = string.Empty;
+            prix_total_Product.Text = string.Empty;
+        }
+        
+        public BitmapImage ImageFromBuffer(byte[] bytes)
+        {
+            MemoryStream stream = new MemoryStream(bytes);
+            BitmapImage image = new BitmapImage();
+            image.BeginInit();
+            image.StreamSource = stream;
+            image.EndInit();
+            return image;
+        }
+
+
+
+
+
+        public void Qte_ProductChanged()
+        {
+
+            try
+            {
+                if (Qte_Product.Text != null)
+                {
+                    prix_total_Product.Text = Convert.ToInt32(Qte_Product.Text) * Convert.ToInt32(prix_unit_Product.Text) + "";
+                }
+            }
+            catch (Exception e)
+            {
+                prix_total_Product.Text = prix_unit_Product.Text;
+
+                Console.WriteLine(e);
+            }
 
         }
+//
+//        public bool is_tbPositionCursor_focus;
+//        public void tbPositionCursor_LostKeyboardFocus()
+//        {
+//            is_tbPositionCursor_focus = false;
+//            Console.WriteLine("tbPositionCursor_LostKeyboardFocus" + is_tbPositionCursor_focus);
+//        }
+//
+//        public void tbPositionCursor_GotKeyboardFocus()
+//        {
+//            is_tbPositionCursor_focus = true;
+//        }
+//
+//        public void TbPositionCursor_OnEditValueChanged()
+//        {
+//            //            tbPositionCursor.Text = tbPositionCursor.Text.Trim();
+//            //            tbPositionCursor.Select(tbPositionCursor.Text.Length, 0);
+//        }
     }
 }
