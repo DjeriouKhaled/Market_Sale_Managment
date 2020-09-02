@@ -1,14 +1,14 @@
 ﻿<Window
+    x:Class="Market.Views.AboutApp"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
     xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
     xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
     xmlns:local="clr-namespace:Market.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ViewModels="clr-namespace:Market.ViewModels"
-    x:Class="Market.Views.AboutApp"
     Width="500"
     Height="300"
     mc:Ignorable="d"
@@ -16,13 +16,11 @@
     WindowStartupLocation="CenterScreen"
     WindowStyle="SingleBorderWindow">
 
-
     <Window.DataContext>
-        <ViewModels:BuyViewModel/>
+        <ViewModels:BuyViewModel />
     </Window.DataContext>
 
-
-    <Grid HorizontalAlignment="Center" >
+    <Grid HorizontalAlignment="Center">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <!-- for navBar  -->
@@ -43,14 +41,14 @@
             ShowBorder="True">
             <dxg:GridControl.View>
                 <dxg:TableView
-                    NavigationStyle="{Binding Path=SelectedItem.Tag, ElementName=templateSelectorListBox}"
-                                       
-                    MouseDoubleClick="{DXEvent 'BuySelected($dx:EventArgsToDataRowConverter.GetDataRow(@args))'}"
-                    VerticalAlignment="Top" HorizontalAlignment="Left"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
                     AllowBestFit="True"
                     AllowEditing="False"
                     AllowGrouping="True"
                     AutoWidth="True"
+                    MouseDoubleClick="{DXEvent 'BuySelected($dx:EventArgsToDataRowConverter.GetDataRow(@args))'}"
+                    NavigationStyle="{Binding Path=SelectedItem.Tag, ElementName=templateSelectorListBox}"
                     ShowGroupPanel="False" />
             </dxg:GridControl.View>
             <dxg:GridColumn
@@ -67,44 +65,51 @@
                 Header="DateVent"
                 IsSmart="True" />
         </dxg:GridControl>
-        
         <dxg:GridControl
             Grid.Row="1"
-			AllowColumnMRUFilterList="False"
-			AllowDrop="False"
-			AllowInitiallyFocusedRow="False"
-			AllowRecursiveSelectionForCollapsedGroups="False"
-			AutoGenerateColumns="None"
-			EnableSmartColumnsGeneration="True"
-			FlowDirection="RightToLeft"
-			ItemsSource="{Binding BuyDetails}"
-			SelectionMode="Row"
-			ShowBorder="True">
+            AllowColumnMRUFilterList="False"
+            AllowDrop="False"
+            AllowInitiallyFocusedRow="False"
+            AllowRecursiveSelectionForCollapsedGroups="False"
+            AutoGenerateColumns="None"
+            EnableSmartColumnsGeneration="True"
+            FlowDirection="RightToLeft"
+            ItemsSource="{Binding BuyDetails}"
+            SelectionMode="Row"
+            ShowBorder="True">
             <dxg:GridControl.View>
                 <dxg:TableView
-					AllowBestFit="True"
-					AllowEditing="False"
-					AllowGrouping="True"
-					AutoWidth="True"
-					ShowGroupPanel="False" />
+                    AllowBestFit="True"
+                    AllowEditing="False"
+                    AllowGrouping="True"
+                    AutoWidth="True"
+                    ShowGroupPanel="False" />
             </dxg:GridControl.View>
             <dxg:GridColumn
-				FieldName="Id"
-				Header="رقم"
-				IsSmart="True" />
+                FieldName="Id"
+                Header="رقم"
+                IsSmart="True" />
             <dxg:GridColumn
-				FieldName="NameProcuct"
-				Header="الاسم"
-				IsSmart="True" />
+                FieldName="NameProcuct"
+                Header="الاسم"
+                IsSmart="True" />
             <dxg:GridColumn
-				FieldName="PrixUnit"
-				FrameworkElement.FlowDirection="LeftToRight"
-				Header="سعر الوحدة"
-				IsSmart="True" />
+                FieldName="PrixUnit"
+                FrameworkElement.FlowDirection="LeftToRight"
+                Header="سعر الوحدة"
+                IsSmart="True" />
             <dxg:GridColumn FieldName="Qte">
                 <dxg:GridColumn.HeaderTemplate>
                     <DataTemplate>
-                        <TextBlock TextTrimming="CharacterEllipsis"><Run Text=" " /><Run Text=" "/><Run Text=" " /><Run Text=" "/><Run Text=" " /><Run Text=" "/><Run FontWeight="Bold" Text="الكمية" /></TextBlock>
+                        <TextBlock TextTrimming="CharacterEllipsis">
+                            <Run Text=" " />
+                            <Run Text=" " />
+                            <Run Text=" " />
+                            <Run Text=" " />
+                            <Run Text=" " />
+                            <Run Text=" " />
+                            <Run FontWeight="Bold" Text="الكمية" />
+                        </TextBlock>
                     </DataTemplate>
                 </dxg:GridColumn.HeaderTemplate>
                 <dxg:GridColumn.EditSettings>
@@ -112,9 +117,9 @@
                 </dxg:GridColumn.EditSettings>
             </dxg:GridColumn>
             <dxg:GridColumn
-				FieldName="PrixTotal"
-				Header="السعر النهائي"
-				IsSmart="True" />
+                FieldName="PrixTotal"
+                Header="السعر النهائي"
+                IsSmart="True" />
         </dxg:GridControl>
     </Grid>
 

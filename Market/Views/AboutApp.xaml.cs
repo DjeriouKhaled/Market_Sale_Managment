@@ -23,7 +23,7 @@ namespace Market.Views
         public AboutApp()
         {
             InitializeComponent();
-          
+            DataContext = new BuyViewModel();
         }
     }
 }

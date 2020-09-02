@@ -54,6 +54,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>Market.App</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="DevExpress.Data.v18.2, Version=18.2.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.Images.v18.2, Version=18.2.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a">
@@ -80,6 +83,14 @@
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MaterialDesignColors, Version=1.2.6.1513, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MaterialDesignColors.1.2.6\lib\net45\MaterialDesignColors.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MaterialDesignThemes.Wpf, Version=3.1.3.1513, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MaterialDesignThemes.3.1.3\lib\net45\MaterialDesignThemes.Wpf.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -144,15 +155,14 @@
     <Compile Include="Persistence\UnitOfWork.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="ViewModels\BuyViewModel.cs" />
+    <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Views\AboutApp.xaml.cs">
       <DependentUpon>AboutApp.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\CurrencyTextBox.cs" />
-    <Compile Include="Views\DXIGallery.xaml.cs">
-      <DependentUpon>DXIGallery.xaml</DependentUpon>
+    <Compile Include="Views\Login.xaml.cs">
+      <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\PutCursorAtEndTextBoxBehavior.cs" />
     <Compile Include="Views\Window1.xaml.cs">
       <DependentUpon>Window1.xaml</DependentUpon>
     </Compile>
@@ -160,7 +170,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\DXIGallery.xaml">
+    <Page Include="Views\Login.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -267,6 +277,34 @@
   <ItemGroup>
     <Resource Include="Res\png\bin.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="51847199_633302410432153_2099513261350191104_n.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Res\png\51847199_633302410432153_2099513261350191104_n.jpg" />
+    <Resource Include="Res\png\89511594_2543874612549918_7307833132693061632_n.jpg" />
+    <Resource Include="Res\png\icons8_add_administrator_240px.png" />
+    <Resource Include="Res\png\icons8_buying_200px.png" />
+    <Resource Include="Res\png\icons8_close_window_26px.png" />
+    <Resource Include="Res\png\icons8_close_window_48px.png" />
+    <Resource Include="Res\png\icons8_close_window_52px.png" />
+    <Resource Include="Res\png\icons8_shopping_cart_128px.png" />
+    <Resource Include="Res\png\icons8_shop_100px.png" />
+    <Resource Include="Res\png\icons8_shop_128px.png" />
+    <Resource Include="Res\png\icons8_shop_200px_1.png" />
+    <Resource Include="Res\png\icons8_shop_24px.png" />
+    <Resource Include="Res\png\icons8_shop_30px.png" />
+    <Resource Include="Res\png\icons8_shop_40px.png" />
+    <Resource Include="Res\png\icons8_shop_60px.png" />
+    <Resource Include="Res\png\icons8_shop_64px.png" />
+    <Resource Include="Res\png\icons8_shop_80px.png" />
+    <Resource Include="Res\png\icons8_show_passwlo.png" />
+    <Resource Include="Res\png\icons8_show_password_100px.png" />
+    <Resource Include="Res\png\icons8_show_password_40px.png" />
+    <Resource Include="Res\png\icons8_show_password_50px_2.png" />
+    <Resource Include="Res\png\icons8_user_50px.png" />
+    <Resource Include="Res\png\icons8_user_male_100px.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -276,9 +314,11 @@
     <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.targets'))" />
     <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\netcoreapp3.0\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\netcoreapp3.0\EntityFramework.props'))" />
     <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\netcoreapp3.0\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\netcoreapp3.0\EntityFramework.targets'))" />
+    <Error Condition="!Exists('..\packages\MaterialDesignThemes.3.1.3\build\MaterialDesignThemes.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MaterialDesignThemes.3.1.3\build\MaterialDesignThemes.targets'))" />
   </Target>
   <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
   <Import Project="..\packages\EntityFramework.6.4.4\build\netcoreapp3.0\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\netcoreapp3.0\EntityFramework.targets')" />
+  <Import Project="..\packages\MaterialDesignThemes.3.1.3\build\MaterialDesignThemes.targets" Condition="Exists('..\packages\MaterialDesignThemes.3.1.3\build\MaterialDesignThemes.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

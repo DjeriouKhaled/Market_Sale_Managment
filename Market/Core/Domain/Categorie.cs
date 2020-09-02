@@ -13,8 +13,8 @@ namespace Market.Core.Domain
 
         public int Order { get; set; }
 
-//        public int? IdProduct { get; set; }
-//
+        public int? IdProduct { get; set; }
+
 //        [ForeignKey("IdProduct")]
 //        public virtual ICollection<Product> Products { get; set; } = new HashSet<Product>();
 

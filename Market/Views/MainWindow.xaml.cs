@@ -11,7 +11,6 @@ namespace Market.Views
         public MainWindow()
         {
             InitializeComponent();
-
             DataContext = new MainWindowViewModel();
         }
 
